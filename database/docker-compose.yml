@@ -1,0 +1,14 @@
+services:
+  postgres15:
+    image: postgres:15.7-alpine
+    environment:
+      POSTGRES_HOST: localhost
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespw
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - "$HOME/data-popcorn:/var/lib/postgresql/data"
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"

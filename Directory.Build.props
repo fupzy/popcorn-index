@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <!-- $(MSBuildThisFileDirectory) is the directory of this file. -->
+    <ConfigFilesFolder>$(MSBuildThisFileDirectory)\\appsettings</ConfigFilesFolder>
+    <EnvFile>$(MSBuildThisFileDirectory)\\.env</EnvFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- Generates a .xml file alongside the .dll file containing all XML comments from the code. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Ignores CS1591 warning that requires XML comment for publicly visible type or member. -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+</Project>
