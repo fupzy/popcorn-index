@@ -81,7 +81,7 @@
             "runner": "vitest",
             "browsers": ["chromium"],
             "tsConfig": "tsconfig.spec.json",
-            "providersFile": "src/test.ts"
+            "runnerConfig": "vitest.config.ts"
           }
         },
         "lint": {
