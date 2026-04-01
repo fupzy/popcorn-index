@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Utilities;
 
-public class AppService
+public sealed class AppService
 {
     public const string CorsPolicy = "enableAll";
 

@@ -1,0 +1,43 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)\..\Directory.Build.props"/>
+
+  <ItemGroup>
+		<ProjectReference Include="$(MSBuildThisFileDirectory)\..\testing\TestingUtilities\TestingUtilities.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+		<PackageReference Include="xunit"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+    <PackageReference Include="xunit.runner.visualstudio"/>
+    <PackageReference Include="Reqnroll"/>
+    <PackageReference Include="Reqnroll.Tools.MsBuild.Generation"/>
+    <PackageReference Include="Reqnroll.xUnit"/>
+    <PackageReference Include="AwesomeAssertions"/>
+  </ItemGroup>
+
+  <ItemGroup>
+		<Content Include="$(MSBuildThisFileDirectory)\xunit.runner.json"
+             Link="xunit.runner.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(MSBuildThisFileDirectory)\reqnroll.json"
+             Link="reqnroll.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+		<Content Include="$(ConfigFilesFolder)\appsettings.json"
+             Link="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(MSBuildThisFileDirectory)\appsettings.reqnroll.json"
+             Link="appsettings.reqnroll.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <PropertyGroup>
+		<RunSettingsFilePath>$(MSBuildThisFileDirectory)\.runsettings</RunSettingsFilePath>
+  </PropertyGroup>
+</Project>
