@@ -1,12 +1,7 @@
 <Project>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
-      <!-- This package will not be exposed to the projects that reference this project. -->
-      <PrivateAssets>all</PrivateAssets>
-      <!-- Selection the parts of the package we want to use. -->
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
     <PackageReference Include="EFCore.NamingConventions"/>
