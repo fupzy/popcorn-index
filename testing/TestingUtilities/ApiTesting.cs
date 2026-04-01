@@ -58,16 +58,4 @@ public sealed class ApiTesting(ServiceTestingSteps serviceTestingSteps)
         });
         this.ResponseMessage = await (serviceTestingSteps.AppTestingService.TestClient ?? throw new InvalidOperationException("TestClient is not initialized")).SendAsync(request);
     }
-
-    public ApiTesting AddHttpRequestHeader(string name, string? value)
-    {
-        this.headers.Add(new HttpRequestHeader(name, value));
-        return this;
-    }
-
-    public ApiTesting ClearHttpRequestHeaders()
-    {
-        this.headers.Clear();
-        return this;
-    }
 }
