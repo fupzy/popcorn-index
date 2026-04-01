@@ -1,0 +1,10 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)\..\Directory.Build.props"/>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
+    <PackageReference Include="Reqnroll"/>
+    <PackageReference Include="AwesomeAssertions"/>
+    <PackageReference Include="SystemTextJson.JsonDiffPatch"/>
+  </ItemGroup>
+</Project>

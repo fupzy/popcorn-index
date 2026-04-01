@@ -1,0 +1,10 @@
+{
+  "stepAssemblies": [
+    {
+      "assembly": "TestingUtilities"
+    }
+  ],
+  "generator": {
+    "addNonParallelizableMarkerForTags": ["postgresql"]
+  }
+}

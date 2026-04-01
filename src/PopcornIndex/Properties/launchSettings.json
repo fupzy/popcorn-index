@@ -1,0 +1,11 @@
+{
+    "profiles": {
+        "from-vs": {
+            "commandName": "Project",
+            "environmentVariables": {
+                "APPSETTINGS_FOLDER": "$(ConfigFilesFolder)",
+                "ENV_FILE": "$(EnvFile)"
+            }
+        }
+    }
+}

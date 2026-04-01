@@ -1,0 +1,46 @@
+<Solution>
+  <Folder Name="/Specs/">
+    <Project Path="specs/MockFeature.Specs/MockFeature.Specs.csproj" />
+  </Folder>
+  <Folder Name="/Specs/_settings/">
+    <File Path="specs/.runsettings" />
+    <File Path="specs/appsettings.reqnroll.json" />
+    <File Path="specs/reqnroll.json" />
+    <File Path="specs/xunit.runner.json" />
+  </Folder>
+  <Folder Name="/_appsettings/">
+    <File Path=".env" />
+    <File Path="appsettings/appsettings.json" />
+  </Folder>
+  <Folder Name="/_build/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/_build/database/">
+    <File Path="database/Directory.Build.props" />
+  </Folder>
+  <Folder Name="/_build/specs/">
+    <File Path="specs/Directory.Build.props" />
+  </Folder>
+  <Folder Name="/_build/src/">
+    <File Path="src/Directory.Build.props" />
+  </Folder>
+  <Folder Name="/_build/testing/">
+    <File Path="testing/Directory.Build.props" />
+  </Folder>
+  <Folder Name="/_database/">
+    <File Path="database/add-migration.bat" />
+    <File Path="database/init-env.bat" />
+    <File Path="database/remove-last-migration.bat" />
+    <File Path="database/update-database.bat" />
+    <Project Path="database/PostgreSqlMigration/PostgreSqlMigration.csproj" />
+  </Folder>
+  <Folder Name="/_testing/">
+    <Project Path="testing/TestingUtilities/TestingUtilities.csproj" />
+  </Folder>
+  <Project Path="src/MockFeature/MockFeature.csproj" />
+  <Project Path="src/PopcornIndex/PopcornIndex.csproj" />
+  <Project Path="src/Utilities/Utilities.csproj" />
+</Solution>
