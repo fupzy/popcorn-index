@@ -13,6 +13,7 @@
     <File Path="appsettings/appsettings.json" />
   </Folder>
   <Folder Name="/_build/">
+    <File Path=".config/dotnet-tools.json" />
     <File Path=".editorconfig" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
