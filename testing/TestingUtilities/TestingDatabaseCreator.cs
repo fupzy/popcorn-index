@@ -43,7 +43,7 @@ public sealed class TestingDatabaseCreator(IReqnrollOutputHelper reqnrollOutputH
         reqnrollOutputHelper.WriteLine($"[TestingDatabaseCreator] Database {this.databaseName} created.");
 
         var targetConnectionString = $"server={host};port={port};database={this.databaseName};userId={user};password={password};";
-        serviceTestingSteps.Args.Add($"--ConnectionStrings:postgresql={targetConnectionString}");
+        serviceTestingSteps.Args.Add($"--ConnectionStrings:Postgresql={targetConnectionString}");
     }
 
     /// <summary>
