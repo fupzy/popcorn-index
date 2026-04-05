@@ -6,7 +6,7 @@ namespace Authentication.Controllers;
 
 [ApiController]
 [ApiVersion(1.0)]
-[Route("v{version:apiVersion}/authentication")]
+[Route("api/v{version:apiVersion}/authentication")]
 [ApiExplorerSettings(GroupName = "v1")]
 public sealed class AuthenticationController(IAuthService authService, IJwtService jwtService) : ControllerBase
 {

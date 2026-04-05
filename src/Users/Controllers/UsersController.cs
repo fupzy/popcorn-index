@@ -6,7 +6,7 @@ namespace Users.Controllers;
 
 [ApiController]
 [ApiVersion(1.0)]
-[Route("v{version:apiVersion}/users")]
+[Route("api/v{version:apiVersion}/users")]
 [ApiExplorerSettings(GroupName = "v1")]
 public sealed class UsersController(IUserRepository userRepository) : ControllerBase
 {
