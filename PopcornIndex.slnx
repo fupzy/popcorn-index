@@ -43,5 +43,6 @@
   </Folder>
   <Project Path="src/MockFeature/MockFeature.csproj" />
   <Project Path="src/PopcornIndex/PopcornIndex.csproj" />
+  <Project Path="src/Users/Users.csproj" Id="99f804ff-7f9c-421e-a556-bc6dc8085caa" />
   <Project Path="src/Utilities/Utilities.csproj" />
 </Solution>
