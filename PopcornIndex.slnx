@@ -39,6 +39,7 @@
     <Project Path="database/PostgreSqlMigration/PostgreSqlMigration.csproj" />
   </Folder>
   <Folder Name="/_testing/">
+    <Project Path="testing/PopcornIndex.Testing/PopcornIndex.Testing.csproj" Id="96ab55fe-a9cb-42d2-b7c5-4d7e611bbf4e" />
     <Project Path="testing/TestingUtilities/TestingUtilities.csproj" />
   </Folder>
   <Project Path="src/Authentication/Authentication.csproj" Id="023a14a2-72e2-4c6e-92a7-c5a32f13d26a" />

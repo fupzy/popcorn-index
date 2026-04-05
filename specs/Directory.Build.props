@@ -3,6 +3,7 @@
 
   <ItemGroup>
 		<ProjectReference Include="$(MSBuildThisFileDirectory)\..\testing\TestingUtilities\TestingUtilities.csproj"/>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)\..\testing\PopcornIndex.Testing\PopcornIndex.Testing.csproj"/>
   </ItemGroup>
 
   <ItemGroup>

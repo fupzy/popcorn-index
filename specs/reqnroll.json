@@ -2,6 +2,9 @@
   "stepAssemblies": [
     {
       "assembly": "TestingUtilities"
+    },
+    {
+      "assembly": "PopcornIndex.Testing"
     }
   ],
   "generator": {

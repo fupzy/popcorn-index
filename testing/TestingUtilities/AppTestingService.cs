@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Utilities;
 
 namespace TestingUtilities;
@@ -39,6 +41,27 @@ public sealed class AppTestingService
         }
 
         this.TestClient = this.TestServer?.CreateClient();
+    }
+
+
+    public T? GetService<T>()
+    {
+        var serviceProvider = this.AppService?.WebApplication?.Services;
+        if (serviceProvider == null)
+        {
+            return default;
+        }
+
+        return serviceProvider.GetService<T>();
+    }
+
+    public async Task Execute<TContext>(Func<TContext, Task> action)
+        where TContext : DbContext
+    {
+        var provider = this.GetService<IServiceProvider>() ?? throw new InvalidOperationException();
+        using var scope = provider.CreateScope();
+        using var dbContext = scope.ServiceProvider.GetRequiredService<TContext>();
+        await action(dbContext);
     }
 
     public async ValueTask DisposeAsync()

@@ -22,5 +22,6 @@
     <InternalsVisibleTo Include="PostgreSqlMigration"/>
 		<InternalsVisibleTo Include="$(AssemblyName).Specs"/>
 		<InternalsVisibleTo Include="TestingUtilities"/>
+		<InternalsVisibleTo Include="PopcornIndex.Testing"/>
   </ItemGroup>
 </Project>
