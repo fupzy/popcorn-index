@@ -24,6 +24,7 @@ internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
     {
         var query = dbContext.Users
             .AsNoTracking()
+            .OrderBy(u => u.Username)
             .Select(u => u.ToEntity());
 
         var items = query.AsAsyncEnumerable();

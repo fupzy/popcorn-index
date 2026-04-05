@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Specs/">
     <Project Path="specs/MockFeature.Specs/MockFeature.Specs.csproj" />
+    <Project Path="specs/Users.Specs/Users.Specs.csproj" Id="7d73ffbf-6f57-4872-96f5-43a1368720d1" />
   </Folder>
   <Folder Name="/Specs/_settings/">
     <File Path="specs/.runsettings" />
