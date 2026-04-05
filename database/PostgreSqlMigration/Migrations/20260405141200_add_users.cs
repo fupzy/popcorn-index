@@ -12,11 +12,11 @@ namespace PostgreSqlMigration.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "popcorn-index");
+                name: "popcorn_index");
 
             migrationBuilder.CreateTable(
                 name: "users",
-                schema: "popcorn-index",
+                schema: "popcorn_index",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -34,7 +34,7 @@ namespace PostgreSqlMigration.Migrations
         {
             migrationBuilder.DropTable(
                 name: "users",
-                schema: "popcorn-index");
+                schema: "popcorn_index");
         }
     }
 }

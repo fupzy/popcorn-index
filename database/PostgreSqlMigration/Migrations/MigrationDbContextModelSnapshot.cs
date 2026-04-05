@@ -17,7 +17,7 @@ namespace PostgreSqlMigration.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("popcorn-index")
+                .HasDefaultSchema("popcorn_index")
                 .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -42,7 +42,7 @@ namespace PostgreSqlMigration.Migrations
                     b.HasKey("Id")
                         .HasName("pk_users");
 
-                    b.ToTable("users", "popcorn-index");
+                    b.ToTable("users", "popcorn_index");
                 });
 #pragma warning restore 612, 618
         }
