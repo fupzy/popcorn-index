@@ -41,6 +41,7 @@
   <Folder Name="/_testing/">
     <Project Path="testing/TestingUtilities/TestingUtilities.csproj" />
   </Folder>
+  <Project Path="src/Authentication/Authentication.csproj" Id="023a14a2-72e2-4c6e-92a7-c5a32f13d26a" />
   <Project Path="src/MockFeature/MockFeature.csproj" />
   <Project Path="src/PopcornIndex/PopcornIndex.csproj" />
   <Project Path="src/Users/Users.csproj" Id="99f804ff-7f9c-421e-a556-bc6dc8085caa" />

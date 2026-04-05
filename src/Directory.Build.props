@@ -15,8 +15,8 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" />
 		<PackageReference Include="Scrutor"/>
 		<PackageReference Include="FluentValidation"/>
-	
-</ItemGroup>
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt"/>
+	</ItemGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="PostgreSqlMigration"/>
