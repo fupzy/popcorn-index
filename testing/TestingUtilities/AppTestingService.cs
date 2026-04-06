@@ -55,6 +55,14 @@ public sealed class AppTestingService
         return serviceProvider.GetService<T>();
     }
 
+    public T GetRequiredService<T>()
+        where T : notnull
+    {
+        var serviceProvider = this.AppService?.WebApplication?.Services ?? throw new InvalidOperationException("ServiceProvider is not initialized");
+
+        return serviceProvider.GetRequiredService<T>();
+    }
+
     public async Task Execute<TContext>(Func<TContext, Task> action)
         where TContext : DbContext
     {
