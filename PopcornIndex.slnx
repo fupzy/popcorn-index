@@ -1,7 +1,6 @@
 <Solution>
   <Folder Name="/Specs/">
     <Project Path="specs/Authentication.Specs/Authentication.Specs.csproj" Id="4e15b2a0-78df-4e93-8de0-69bde4fd41ec" />
-    <Project Path="specs/MockFeature.Specs/MockFeature.Specs.csproj" />
     <Project Path="specs/Users.Specs/Users.Specs.csproj" Id="7d73ffbf-6f57-4872-96f5-43a1368720d1" />
   </Folder>
   <Folder Name="/Specs/_settings/">
@@ -45,7 +44,6 @@
     <Project Path="testing/TestingUtilities/TestingUtilities.csproj" />
   </Folder>
   <Project Path="src/Authentication/Authentication.csproj" Id="023a14a2-72e2-4c6e-92a7-c5a32f13d26a" />
-  <Project Path="src/MockFeature/MockFeature.csproj" />
   <Project Path="src/PopcornIndex/PopcornIndex.csproj" />
   <Project Path="src/Users/Users.csproj" Id="99f804ff-7f9c-421e-a556-bc6dc8085caa" />
   <Project Path="src/Utilities/Utilities.csproj" />
