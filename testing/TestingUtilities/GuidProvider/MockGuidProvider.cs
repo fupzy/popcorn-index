@@ -1,6 +1,6 @@
 ﻿using Utilities.GuidProvider;
 
-namespace TestingUtilities;
+namespace TestingUtilities.GuidProvider;
 
 public sealed class MockGuidProvider : IGuidProvider
 {
