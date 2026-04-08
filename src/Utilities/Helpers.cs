@@ -47,7 +47,7 @@ public static class Helpers
     /// </summary>
     public static void ReadEnvFileIfExists()
     {
-        var envFile = Environment.GetEnvironmentVariable("ENV_FILE") ?? string.Empty;
+        var envFile = Environment.GetEnvironmentVariable("ENV_FILE") ?? ".env";
         if (!string.IsNullOrWhiteSpace(envFile) && File.Exists(envFile))
         {
             foreach (var line in File.ReadAllLines(envFile))

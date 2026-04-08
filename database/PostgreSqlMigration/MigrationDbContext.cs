@@ -1,20 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Users.Infrastructure;
 using Utilities;
 
 namespace PostgreSqlMigration;
 
-public class MigrationDbContext : DbContext
+public class MigrationDbContext(DbContextOptions<MigrationDbContext> options, IConfiguration configuration) : DbContext(options)
 {
-  private readonly IConfiguration configuration;
-
-    public MigrationDbContext(DbContextOptions<MigrationDbContext> options, IConfiguration configuration)
-        : base(options)
-    {
-        this.configuration = configuration;
-    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema(this.configuration.GetPostgreSqlSchema());
+        modelBuilder.HasDefaultSchema(configuration.GetPostgreSqlSchema());
+        UsersDbContext.CreateNewTables(modelBuilder);
     }
 }

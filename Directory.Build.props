@@ -1,7 +1,8 @@
 <Project>
+  <Import Project="$(MSBuildThisFileDirectory)\appsettings.props"/>
+
   <PropertyGroup>
     <!-- $(MSBuildThisFileDirectory) is the directory of this file. -->
-    <ConfigFilesFolder>$(MSBuildThisFileDirectory)\\appsettings</ConfigFilesFolder>
     <EnvFile>$(MSBuildThisFileDirectory)\\.env</EnvFile>
   </PropertyGroup>
 

@@ -56,6 +56,7 @@ public sealed class ApiTesting(ServiceTestingSteps serviceTestingSteps)
         {
             request.Headers.Add(header.Name, header.Value);
         });
+
         this.ResponseMessage = await (serviceTestingSteps.AppTestingService.TestClient ?? throw new InvalidOperationException("TestClient is not initialized")).SendAsync(request);
     }
 }

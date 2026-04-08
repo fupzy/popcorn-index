@@ -11,6 +11,9 @@ public class ServiceTestingSteps(AppTestingService appTestingService, ScenarioCo
 
     public AppTestingService AppTestingService => appTestingService;
 
+    public T GetRequiredService<T>()
+        where T : notnull => this.AppTestingService.GetRequiredService<T>();
+
     /// <summary>
     /// Command line arguments that will be passed to the tested application.
     /// </summary>

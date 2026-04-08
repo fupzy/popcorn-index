@@ -36,7 +36,8 @@ public sealed class AppService
         builder.Configuration
             .SetBasePath(Helpers.GetConfigFilesFolder())
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables();
+            .AddEnvironmentVariables()
+            .AddCommandLine(args);
 
         builder.Services
             .AddApiVersioning(options =>

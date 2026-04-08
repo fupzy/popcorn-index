@@ -4,8 +4,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.5" />
-
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.5" />
@@ -18,6 +16,7 @@
     <PackageVersion Include="Scrutor" Version="7.0.0" />
     <PackageVersion Include="SystemTextJson.JsonDiffPatch" Version="2.0.0" />
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0" />
 
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
