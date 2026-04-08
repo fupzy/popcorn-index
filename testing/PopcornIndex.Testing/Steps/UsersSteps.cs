@@ -1,4 +1,6 @@
-﻿using Reqnroll;
+﻿using AwesomeAssertions;
+using Microsoft.EntityFrameworkCore;
+using Reqnroll;
 using TestingUtilities;
 using Users.Infrastructure;
 
@@ -21,4 +23,15 @@ public sealed class UsersSteps(ServiceTestingSteps steps)
         });
     }
 
+    [Then("the stored users are")]
+    public async Task ThenTheStoredUsersAre(DataTable dataTable)
+    {
+        await this.appTestingService.Execute(async (UsersDbContext context) =>
+        {
+            var expected = dataTable.CreateSet<UserDao>();
+            var stored = await context.Set<UserDao>().ToListAsync();
+
+            stored.Should().BeEquivalentTo(expected);
+        });
+    }
 }

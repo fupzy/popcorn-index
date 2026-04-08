@@ -8,8 +8,7 @@ Background:
         | 1279ae3a-7a4a-4ce1-aa3f-0b3427a03368 | Danny    | some_danny_password_hash     |
         | f4d9d1fd-f3a5-4bcc-88d2-7e0074a08b6b | BobSmith | some_bob_smith_password_hash |
 
-
-Scenario: Getting the defined users
+Scenario: 1. Getting the defined users
     When I get all the defined users
     Then I receive a "OK" status
     And I receive the response

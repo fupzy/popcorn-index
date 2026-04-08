@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\database\PostgreSqlMigration\PostgreSqlMigration.csproj" />
+    <ProjectReference Include="..\..\src\Authentication\Authentication.csproj" />
     <ProjectReference Include="..\TestingUtilities\TestingUtilities.csproj" />
   </ItemGroup>
 

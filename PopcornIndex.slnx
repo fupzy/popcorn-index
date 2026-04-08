@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Specs/">
+    <Project Path="specs/Authentication.Specs/Authentication.Specs.csproj" Id="4e15b2a0-78df-4e93-8de0-69bde4fd41ec" />
     <Project Path="specs/MockFeature.Specs/MockFeature.Specs.csproj" />
     <Project Path="specs/Users.Specs/Users.Specs.csproj" Id="7d73ffbf-6f57-4872-96f5-43a1368720d1" />
   </Folder>

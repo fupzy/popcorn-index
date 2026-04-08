@@ -10,7 +10,7 @@ public sealed class MockGuidProvider : IGuidProvider
     
     public Guid NewGuid()
     {
-        if (this.guids.Count == 0)
+        if (this.guids.Count != 0)
         {
             return this.guids.Dequeue();
         }
