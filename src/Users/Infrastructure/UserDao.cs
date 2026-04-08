@@ -21,6 +21,10 @@ internal sealed class UserDao
         modelBuilder.Entity<UserDao>()
             .Property(u => u.Id)
             .ValueGeneratedNever();
+
+        modelBuilder.Entity<UserDao>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
     }
 
     public User ToEntity()

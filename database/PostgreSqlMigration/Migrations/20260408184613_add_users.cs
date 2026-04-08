@@ -27,6 +27,13 @@ namespace PostgreSqlMigration.Migrations
                 {
                     table.PrimaryKey("pk_users", x => x.id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_users_username",
+                schema: "popcorn_index",
+                table: "users",
+                column: "username",
+                unique: true);
         }
 
         /// <inheritdoc />

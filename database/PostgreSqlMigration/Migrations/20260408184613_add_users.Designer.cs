@@ -12,7 +12,7 @@ using PostgreSqlMigration;
 namespace PostgreSqlMigration.Migrations
 {
     [DbContext(typeof(MigrationDbContext))]
-    [Migration("20260405141200_add_users")]
+    [Migration("20260408184613_add_users")]
     partial class add_users
     {
         /// <inheritdoc />
@@ -44,6 +44,10 @@ namespace PostgreSqlMigration.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_users");
+
+                    b.HasIndex("Username")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_username");
 
                     b.ToTable("users", "popcorn_index");
                 });

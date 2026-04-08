@@ -42,6 +42,10 @@ namespace PostgreSqlMigration.Migrations
                     b.HasKey("Id")
                         .HasName("pk_users");
 
+                    b.HasIndex("Username")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_username");
+
                     b.ToTable("users", "popcorn_index");
                 });
 #pragma warning restore 612, 618
