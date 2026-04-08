@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Utilities;
+namespace Utilities.Extensions;
 
 public static class MvcBuilderExtensions
 {

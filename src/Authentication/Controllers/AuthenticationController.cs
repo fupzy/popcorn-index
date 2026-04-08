@@ -2,7 +2,7 @@
 using Authentication.Domain;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Utilities;
+using Utilities.Extensions;
 
 namespace Authentication.Controllers;
 

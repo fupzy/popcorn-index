@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Utilities;
+using Utilities.Extensions;
 
 namespace TestingUtilities;
 

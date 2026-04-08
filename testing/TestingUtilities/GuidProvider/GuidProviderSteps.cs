@@ -1,8 +1,8 @@
 ﻿using Reqnroll;
 using Reqnroll.Assist;
-using Utilities;
+using Utilities.GuidProvider;
 
-namespace TestingUtilities;
+namespace TestingUtilities.GuidProvider;
 
 [Binding]
 public sealed class GuidProviderSteps(ServiceTestingSteps steps)
