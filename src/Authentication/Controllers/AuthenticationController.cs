@@ -11,7 +11,7 @@ namespace Authentication.Controllers;
 public sealed class AuthenticationController(IAuthService authService, IJwtService jwtService) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<IActionResult> Register(LoginOrRegisterCommand command)
+    public async Task<IActionResult> Register([FromBody] LoginOrRegisterCommand command)
     {
         await authService.Register(command.Username, command.Password);
 
@@ -19,7 +19,7 @@ public sealed class AuthenticationController(IAuthService authService, IJwtServi
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginOrRegisterCommand command)
+    public async Task<IActionResult> Login([FromBody] LoginOrRegisterCommand command)
     {
         var user = await authService.ValidateUser(command.Username, command.Password);
 
