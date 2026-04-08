@@ -1,7 +1,7 @@
 ﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Utilities;
+namespace Utilities.Extensions;
 
 public static class ValidationResultExtensions
 {

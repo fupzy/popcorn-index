@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Utilities;
+using Utilities.Extensions;
 
 namespace Users.Infrastructure;
 

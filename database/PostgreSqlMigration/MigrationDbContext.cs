@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Users.Infrastructure;
-using Utilities;
+using Utilities.Extensions;
 
 namespace PostgreSqlMigration;
 

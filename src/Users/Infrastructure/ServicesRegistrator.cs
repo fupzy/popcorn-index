@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Utilities;
+using Utilities.Extensions;
 
 namespace Users.Infrastructure;
 
