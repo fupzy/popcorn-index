@@ -1,7 +1,7 @@
 ﻿using Authentication.Domain;
 using Microsoft.AspNetCore.Identity;
 using Users.Domain;
-using Utilities;
+using Utilities.GuidProvider;
 
 namespace Authentication.Application;
 

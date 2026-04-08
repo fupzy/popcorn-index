@@ -1,4 +1,4 @@
-﻿namespace Utilities;
+﻿namespace Utilities.GuidProvider;
 
 public interface IGuidProvider
 {
