@@ -36,3 +36,52 @@ Scenario: 2. Logging a user in with an invalid password
             }
         """
     Then I receive a "Unauthorized" status
+
+Scenario Outline: 3. Logging a user in with an invalid password validation
+     When A user log in with the command
+        """
+            {
+                "username": "Danny",
+                "password": <password>
+            }
+        """
+    Then I receive a "BadRequest" status
+    And I receive the validation errors
+        """
+            {
+                "<property>": ["<message>"]
+            }
+        """
+
+    Examples: 
+        | password | property | message                                     |
+        | null     | Password | The Password field is required.             |
+        | ""       | Password | Password cannot be empty                    |
+        | "a"      | Password | Password must be at least 6 characters long |
+        | "aa"     | Password | Password must be at least 6 characters long |
+        | "aaa"    | Password | Password must be at least 6 characters long |
+        | "aaaa"   | Password | Password must be at least 6 characters long |
+        | "aaaaa"  | Password | Password must be at least 6 characters long |
+
+Scenario Outline: 4. Logging a user in with an invalid username validation
+     When A user log in with the command
+        """
+            {
+                "username": <username>,
+                "password": "some_password"
+            }
+        """
+    Then I receive a "BadRequest" status
+    And I receive the validation errors
+        """
+            {
+                "<property>": ["<message>"]
+            }
+        """
+
+    Examples: 
+        | username | property | message                                     |
+        | null     | Username | The Username field is required.             |
+        | ""       | Username | Username cannot be empty                    |
+        | "a"      | Username | Username must be at least 3 characters long |
+        | "aa"     | Username | Username must be at least 3 characters long |
