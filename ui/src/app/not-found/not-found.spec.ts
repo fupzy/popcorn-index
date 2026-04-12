@@ -21,7 +21,7 @@ describe('NotFound', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the notfound image', () => {
+  it('should render the not found image', () => {
     const image = fixture.debugElement.query(By.css('img'));
     const altText = image.nativeElement.alt;
 
