@@ -45,7 +45,7 @@ describe('App', () => {
     expect(title).toContain(expectedTitle);
   });
 
-  it('should render the menu', async () => {
+  it('should render the menu', () => {
     const menu = fixture.debugElement.query(By.css('app-menu'));
 
     expect(menu).toBeTruthy();
