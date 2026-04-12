@@ -1,17 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { Router } from '@angular/router';
-import { MatButtonHarness } from '@angular/material/button/testing';
 
-import { provideRoutingTesting } from '@testing';
+import { MaterialTesting, provideRoutingTesting } from '@testing';
 
 import { Menu } from './menu';
 
 describe('Menu', () => {
   let component: Menu;
   let fixture: ComponentFixture<Menu>;
-  let loader: HarnessLoader;
+  let materialTesting: MaterialTesting;
   let router: Router;
 
   beforeEach(async () => {
@@ -24,7 +21,7 @@ describe('Menu', () => {
     fixture = TestBed.createComponent(Menu);
     component = fixture.componentInstance;
 
-    loader = TestbedHarnessEnvironment.loader(fixture);
+    materialTesting = new MaterialTesting(fixture);
     router = TestBed.inject(Router);
   });
 
@@ -33,15 +30,13 @@ describe('Menu', () => {
   });
 
   it('should render a Home button', async () => {
-    const button = await loader.getHarnessOrNull(MatButtonHarness.with({ text: 'Home' }));
+    const buttonExists = await materialTesting.matButton.exists('Home');
 
-    expect(button).toBeTruthy();
+    expect(buttonExists).toBeTruthy();
   });
 
   it('should navigate to /home when clicking on the Home button', async () => {
-    const button = await loader.getHarness(MatButtonHarness.with({ text: 'Home' }));
-
-    await button.click();
+    await materialTesting.matButton.click('Home');
 
     expect(router.url).toEqual('/home');
   });
