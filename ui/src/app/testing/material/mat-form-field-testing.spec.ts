@@ -47,8 +47,6 @@ describe('MatFormFieldTesting', () => {
   let materialTesting: MaterialTesting;
 
   beforeEach(async () => {
-    vi.useFakeTimers();
-
     await TestBed.configureTestingModule({
       imports: [TestComponent],
       teardown: { destroyAfterEach: true }
@@ -58,10 +56,6 @@ describe('MatFormFieldTesting', () => {
     component = fixture.componentInstance;
 
     materialTesting = new MaterialTesting(fixture);
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
   });
 
   it('should create a MatFormFieldTesting instance', () => {
