@@ -1,0 +1,57 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-full max-w-md" novalidate>
+  <h2 class="text-2xl font-bold text-center mb-2!">Create your account</h2>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Username</mat-label>
+    <input matInput type="text" formControlName="username" autocomplete="username" />
+    @if (form.controls.username.hasError('required')) {
+      <mat-error>Username is required</mat-error>
+    }
+    @if (form.controls.username.hasError('minlength')) {
+      <mat-error>Username must be at least 3 characters long</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" autocomplete="new-password" />
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+      (click)="togglePasswordVisibility()">
+      <i class="fa-solid" [class.fa-eye]="hidePassword()" [class.fa-eye-slash]="!hidePassword()"></i>
+    </button>
+    @if (form.controls.password.hasError('required')) {
+      <mat-error>Password is required</mat-error>
+    }
+    @if (form.controls.password.hasError('minlength')) {
+      <mat-error>Password must be at least 6 characters long</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Confirm password</mat-label>
+    <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="confirmPassword" autocomplete="new-password" />
+    @if (form.controls.confirmPassword.hasError('required')) {
+      <mat-error>Please confirm your password</mat-error>
+    }
+    @if (form.controls.confirmPassword.hasError('passwordMismatch')) {
+      <mat-error>Passwords do not match</mat-error>
+    }
+  </mat-form-field>
+
+  @if (errorMessage()) {
+    <div class="text-red-600 text-sm text-center" role="alert"><i class="fa-solid fa-circle-exclamation mr-2"></i>{{ errorMessage() }}</div>
+  }
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || isSubmitting()">
+    @if (isSubmitting()) {
+      <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+    } @else {
+      <i class="fa-solid fa-user-plus mr-2"></i>
+    }
+    Sign up
+  </button>
+</form>
