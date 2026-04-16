@@ -1,0 +1,40 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-full max-w-md" novalidate>
+  <h2 class="text-2xl font-bold text-center mb-2!">Sign in to your account</h2>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Username</mat-label>
+    <input matInput type="text" formControlName="username" autocomplete="username" />
+    @if (form.controls.username.hasError('required')) {
+      <mat-error>Username is required</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" autocomplete="current-password" />
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+      (click)="togglePasswordVisibility()">
+      <i class="fa-solid" [class.fa-eye]="hidePassword()" [class.fa-eye-slash]="!hidePassword()"></i>
+    </button>
+    @if (form.controls.password.hasError('required')) {
+      <mat-error>Password is required</mat-error>
+    }
+  </mat-form-field>
+
+  @if (errorMessage()) {
+    <div class="text-red-600 text-sm text-center" role="alert"><i class="fa-solid fa-circle-exclamation mr-2"></i>{{ errorMessage() }}</div>
+  }
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || isSubmitting()">
+    @if (isSubmitting()) {
+      <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+    } @else {
+      <i class="fa-solid fa-right-to-bracket mr-2"></i>
+    }
+    Sign in
+  </button>
+</form>

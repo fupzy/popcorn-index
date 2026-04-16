@@ -5,6 +5,7 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from './app.routes';
 import { Home } from './home/home';
 import { NotFound } from './not-found/not-found';
+import { Login } from './authentication/login/login';
 import { Register } from './authentication/register/register';
 
 describe('App Routes', () => {
@@ -28,6 +29,7 @@ describe('App Routes', () => {
   (
     [
       { url: '/home', expected: Home },
+      { url: '/login', expected: Login },
       { url: '/register', expected: Register },
       { url: '/unknown', expected: NotFound },
       { url: '/angular', expected: NotFound },
