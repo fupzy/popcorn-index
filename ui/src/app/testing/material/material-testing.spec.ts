@@ -14,11 +14,11 @@ class TestComponent {}
 describe('MaterialTesting', () => {
   let fixture: ComponentFixture<TestComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [TestComponent],
       teardown: { destroyAfterEach: true }
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();

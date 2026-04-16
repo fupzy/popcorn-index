@@ -11,10 +11,10 @@ describe('App Routes', () => {
   let harness: RouterTestingHarness;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       providers: [provideRouter(routes)],
       teardown: { destroyAfterEach: true }
-    }).compileComponents();
+    });
 
     harness = await RouterTestingHarness.create();
   });

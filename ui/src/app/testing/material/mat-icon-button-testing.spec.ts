@@ -23,11 +23,11 @@ describe('MatIconButtonTesting', () => {
   let fixture: ComponentFixture<TestComponent>;
   let materialTesting: MaterialTesting;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [TestComponent],
       teardown: { destroyAfterEach: true }
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(TestComponent);
     component = fixture.componentInstance;

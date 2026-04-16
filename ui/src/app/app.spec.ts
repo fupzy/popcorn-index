@@ -13,12 +13,12 @@ describe('App', () => {
   let fixture: ComponentFixture<App>;
   let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [App],
       providers: [provideRoutingTesting()],
       teardown: { destroyAfterEach: true }
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(App);
     component = fixture.componentInstance;
