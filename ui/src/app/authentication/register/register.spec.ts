@@ -72,7 +72,7 @@ describe('Register', () => {
     expect(errorText).toContain('do not match');
   });
 
-  it('should POST the credentials and navigate to /home on success', async () => {
+  it('should POST the credentials and navigate to /login on success', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
 
     await materialTesting.matFormField.setMatInputValue('Username', 'alice');
@@ -87,7 +87,7 @@ describe('Register', () => {
 
     request.flush(null);
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/home']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 
   const errorResponseCases: {

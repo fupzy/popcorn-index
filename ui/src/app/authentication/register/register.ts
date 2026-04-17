@@ -66,7 +66,7 @@ export class Register {
     this.authenticationService.register(username, password).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/login']);
       },
       error: (error: HttpErrorResponse) => {
         this.isSubmitting.set(false);
