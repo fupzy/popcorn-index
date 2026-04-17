@@ -11,12 +11,12 @@ describe('Menu', () => {
   let materialTesting: MaterialTesting;
   let router: Router;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [Menu],
       providers: [provideRoutingTesting()],
       teardown: { destroyAfterEach: true }
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(Menu);
     component = fixture.componentInstance;

@@ -6,15 +6,14 @@ describe('Home', () => {
   let component: Home;
   let fixture: ComponentFixture<Home>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [Home],
       teardown: { destroyAfterEach: true }
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(Home);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
   it('should create', () => {

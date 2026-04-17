@@ -1,15 +1,18 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 import { MaterialTesting } from './material-testing';
 
 @Component({
-  imports: [MatButton],
+  imports: [MatButton, MatIcon],
   template: `
     <button mat-button>first button</button>
     <button mat-button [disabled]="true">disabled button</button>
     <button mat-button (click)="hasButtonBeenClicked.set(true)">clickable button</button>
+    <button mat-button><i class="fa-solid fa-plus"></i>button with fa icon</button>
+    <button mat-button><mat-icon class="fa-solid fa-minus"></mat-icon>button with mat icon</button>
   `
 })
 class TestComponent {
@@ -21,11 +24,11 @@ describe('MatButtonTesting', () => {
   let fixture: ComponentFixture<TestComponent>;
   let materialTesting: MaterialTesting;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [TestComponent],
       teardown: { destroyAfterEach: true }
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(TestComponent);
     component = fixture.componentInstance;
@@ -75,5 +78,18 @@ describe('MatButtonTesting', () => {
 
     const hasButtonBeenClickedAfterClicking = component.hasButtonBeenClicked();
     expect(hasButtonBeenClickedAfterClicking).toEqual(true);
+  });
+
+  [
+    { label: 'button with fa icon', icon: 'fa-plus', expected: true },
+    { label: 'button with mat icon', icon: 'fa-minus', expected: true },
+    { label: 'button with fa icon', icon: 'fa-minus', expected: false },
+    { label: 'first button', icon: 'fa-plus', expected: false }
+  ].forEach(({ label, icon, expected }) => {
+    it(`should return ${expected} when using hasIcon with icon "${icon}" on "${label}"`, async () => {
+      const hasIcon = await materialTesting.matButton.hasIcon(label, icon);
+
+      expect(hasIcon).toEqual(expected);
+    });
   });
 });

@@ -1,0 +1,20 @@
+<form [formGroup]="form()" (ngSubmit)="formSubmit.emit()" class="flex flex-col gap-4 w-full max-w-md" novalidate>
+  <h2 class="text-2xl font-bold text-center mb-2!">{{ title() }}</h2>
+
+  <ng-content />
+
+  @if (errorMessage()) {
+    <div class="text-red-600 text-sm text-center" role="alert">
+      <i class="fa-solid fa-circle-exclamation mr-2"></i>{{ errorMessage() }}
+    </div>
+  }
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="submitDisabled() || isSubmitting()">
+    @if (isSubmitting()) {
+      <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+    } @else {
+      <i class="fa-solid {{ submitIcon() }} mr-2"></i>
+    }
+    {{ submitLabel() }}
+  </button>
+</form>

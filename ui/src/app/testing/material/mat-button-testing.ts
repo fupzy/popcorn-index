@@ -64,4 +64,19 @@ export class MatButtonTesting {
 
     await matButton.click();
   }
+
+  /**
+   * Checks whether the specified Material button contains a descendant
+   * element (e.g. `<mat-icon>`, Font Awesome `<i>`) with the given class.
+   *
+   * @param label Text or regular expression used to find the button.
+   * @param icon Class applied to any descendant icon element used to identify the icon.
+   * @returns Promise resolving to true if such an element is present, otherwise false.
+   */
+  public async hasIcon(label: string | RegExp, icon: string): Promise<boolean> {
+    const matButton = await this.getMatButton(label);
+    const host = await matButton.host();
+
+    return host.matchesSelector(`:has(.${icon})`);
+  }
 }

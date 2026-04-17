@@ -1,0 +1,42 @@
+<app-auth-form-shell
+  [form]="form"
+  title="Create your account"
+  submitLabel="Sign up"
+  submitIcon="fa-user-plus"
+  [submitDisabled]="form.invalid"
+  [isSubmitting]="isSubmitting()"
+  [errorMessage]="errorMessage()"
+  (formSubmit)="onSubmit()">
+  <mat-form-field appearance="outline">
+    <mat-label>Username</mat-label>
+    <input matInput type="text" [formControl]="form.controls.username" autocomplete="username" />
+    @if (form.controls.username.hasError('required')) {
+      <mat-error>Username is required</mat-error>
+    }
+    @if (form.controls.username.hasError('minlength')) {
+      <mat-error>Username must be at least 3 characters long</mat-error>
+    }
+  </mat-form-field>
+
+  <app-password-field
+    label="Password"
+    [control]="form.controls.password"
+    autocomplete="new-password"
+    [hidden]="hidePassword()"
+    [errors]="{
+      required: 'Password is required',
+      minlength: 'Password must be at least 6 characters long'
+    }"
+    (visibilityToggle)="togglePasswordVisibility()" />
+
+  <app-password-field
+    label="Confirm password"
+    [control]="form.controls.confirmPassword"
+    autocomplete="new-password"
+    [hidden]="hidePassword()"
+    [showToggle]="false"
+    [errors]="{
+      required: 'Please confirm your password',
+      passwordMismatch: 'Passwords do not match'
+    }" />
+</app-auth-form-shell>
