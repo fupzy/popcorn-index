@@ -2,11 +2,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 
+import { AuthFormShell } from '../auth-form-shell/auth-form-shell';
 import { AuthenticationService } from '../authentication.service';
+import { networkOrGenericErrorMessage } from '../authentication-error';
+import { PasswordField } from '../password-field/password-field';
 
 /**
  * Shape of an ASP.NET Core `ValidationProblemDetails` response body
@@ -22,12 +24,9 @@ interface ValidationProblemDetails {
  */
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, MatButton, MatIconButton, MatError, MatFormField, MatLabel, MatInput, MatSuffix],
+  imports: [ReactiveFormsModule, MatError, MatFormField, MatLabel, MatInput, AuthFormShell, PasswordField],
   templateUrl: './register.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    class: 'flex flex-1 items-center justify-center p-4'
-  }
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Register {
   protected readonly form;
@@ -107,16 +106,7 @@ const passwordsMatchValidator = (control: AbstractControl): ValidationErrors | n
   return null;
 };
 
-/**
- * Derives a user-facing error message from a failed registration response.
- * Returns the first validation message on HTTP 400, a network hint on
- * status 0, or a generic fallback otherwise.
- */
 const extractErrorMessage = (error: HttpErrorResponse): string => {
-  if (error.status === 0) {
-    return 'Unable to reach the server. Please try again later.';
-  }
-
   if (error.status === 400) {
     const body = error.error as ValidationProblemDetails | null;
     const errors = body?.errors;
@@ -129,5 +119,5 @@ const extractErrorMessage = (error: HttpErrorResponse): string => {
     }
   }
 
-  return 'An unexpected error occurred. Please try again.';
+  return networkOrGenericErrorMessage(error);
 };

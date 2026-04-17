@@ -38,20 +38,12 @@ describe('Register', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the three form fields', async () => {
-    const usernameExists = await materialTesting.matFormField.exists('Username');
-    const passwordExists = await materialTesting.matFormField.exists('Password');
-    const confirmPasswordExists = await materialTesting.matFormField.exists('Confirm password');
+  it('should render the AuthFormShell and PasswordField subcomponents', () => {
+    const shell = fixture.debugElement.query(By.css('app-auth-form-shell'));
+    const passwordFields = fixture.debugElement.queryAll(By.css('app-password-field'));
 
-    expect(usernameExists).toEqual(true);
-    expect(passwordExists).toEqual(true);
-    expect(confirmPasswordExists).toEqual(true);
-  });
-
-  it('should render a disabled Sign up button when the form is empty', async () => {
-    const isDisabled = await materialTesting.matButton.isDisabled('Sign up');
-
-    expect(isDisabled).toEqual(true);
+    expect(shell).not.toBeNull();
+    expect(passwordFields).toHaveLength(2);
   });
 
   [
@@ -78,16 +70,6 @@ describe('Register', () => {
     const errorText = await errors[0].getText();
 
     expect(errorText).toContain('do not match');
-  });
-
-  it('should enable the Sign up button when the form is valid', async () => {
-    await materialTesting.matFormField.setMatInputValue('Username', 'alice');
-    await materialTesting.matFormField.setMatInputValue('Password', 'secret-pw');
-    await materialTesting.matFormField.setMatInputValue('Confirm password', 'secret-pw');
-
-    const isDisabled = await materialTesting.matButton.isDisabled('Sign up');
-
-    expect(isDisabled).toEqual(false);
   });
 
   it('should POST the credentials and navigate to /home on success', async () => {
@@ -157,33 +139,6 @@ describe('Register', () => {
       expect(alert).not.toBeNull();
       expect(alert.nativeElement.textContent).toContain(expectedMessage);
     });
-  });
-
-  it('should toggle the password input type when clicking the visibility button', async () => {
-    const queryInput = (name: string) => fixture.debugElement.query(By.css(`input[formControlName="${name}"]`)).nativeElement as HTMLInputElement;
-    const queryToggle = () => {
-      const selector = 'button[aria-label="Show password"], button[aria-label="Hide password"]';
-      return fixture.debugElement.query(By.css(selector)).nativeElement as HTMLButtonElement;
-    };
-
-    fixture.detectChanges();
-
-    expect(queryInput('password').type).toEqual('password');
-    expect(queryInput('confirmPassword').type).toEqual('password');
-    expect(queryToggle().getAttribute('aria-label')).toEqual('Show password');
-
-    queryToggle().click();
-    fixture.detectChanges();
-
-    expect(queryInput('password').type).toEqual('text');
-    expect(queryInput('confirmPassword').type).toEqual('text');
-    expect(queryToggle().getAttribute('aria-label')).toEqual('Hide password');
-
-    queryToggle().click();
-    fixture.detectChanges();
-
-    expect(queryInput('password').type).toEqual('password');
-    expect(queryInput('confirmPassword').type).toEqual('password');
   });
 
   it('should clear the mismatch error when the user corrects the password field', async () => {

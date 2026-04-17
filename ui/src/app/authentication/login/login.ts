@@ -2,11 +2,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 
+import { AuthFormShell } from '../auth-form-shell/auth-form-shell';
 import { AuthenticationService } from '../authentication.service';
+import { networkOrGenericErrorMessage } from '../authentication-error';
+import { PasswordField } from '../password-field/password-field';
 
 /**
  * Login page. Displays a reactive form for signing in and delegates
@@ -14,12 +16,9 @@ import { AuthenticationService } from '../authentication.service';
  */
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, MatButton, MatIconButton, MatError, MatFormField, MatLabel, MatInput, MatSuffix],
+  imports: [ReactiveFormsModule, MatError, MatFormField, MatLabel, MatInput, AuthFormShell, PasswordField],
   templateUrl: './login.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    class: 'flex flex-1 items-center justify-center p-4'
-  }
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Login {
   protected readonly form;
@@ -65,19 +64,10 @@ export class Login {
   }
 }
 
-/**
- * Derives a user-facing error message from a failed login response.
- * Returns a credentials hint on HTTP 401, a network hint on status 0,
- * or a generic fallback otherwise.
- */
 const extractErrorMessage = (error: HttpErrorResponse): string => {
-  if (error.status === 0) {
-    return 'Unable to reach the server. Please try again later.';
-  }
-
   if (error.status === 401) {
     return 'Invalid username or password.';
   }
 
-  return 'An unexpected error occurred. Please try again.';
+  return networkOrGenericErrorMessage(error);
 };

@@ -38,18 +38,12 @@ describe('Login', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the two form fields', async () => {
-    const usernameExists = await materialTesting.matFormField.exists('Username');
-    const passwordExists = await materialTesting.matFormField.exists('Password');
+  it('should render the AuthFormShell and PasswordField subcomponents', () => {
+    const shell = fixture.debugElement.query(By.css('app-auth-form-shell'));
+    const passwordField = fixture.debugElement.query(By.css('app-password-field'));
 
-    expect(usernameExists).toEqual(true);
-    expect(passwordExists).toEqual(true);
-  });
-
-  it('should render a disabled Sign in button when the form is empty', async () => {
-    const isDisabled = await materialTesting.matButton.isDisabled('Sign in');
-
-    expect(isDisabled).toEqual(true);
+    expect(shell).not.toBeNull();
+    expect(passwordField).not.toBeNull();
   });
 
   ['Username', 'Password'].forEach((field) => {
@@ -63,15 +57,6 @@ describe('Login', () => {
 
       expect(errorText).toContain('required');
     });
-  });
-
-  it('should enable the Sign in button when the form is valid', async () => {
-    await materialTesting.matFormField.setMatInputValue('Username', 'alice');
-    await materialTesting.matFormField.setMatInputValue('Password', 'secret-pw');
-
-    const isDisabled = await materialTesting.matButton.isDisabled('Sign in');
-
-    expect(isDisabled).toEqual(false);
   });
 
   it('should POST the credentials and navigate to /home on success', async () => {
@@ -129,30 +114,6 @@ describe('Login', () => {
       expect(alert).not.toBeNull();
       expect(alert.nativeElement.textContent).toContain(expectedMessage);
     });
-  });
-
-  it('should toggle the password input type when clicking the visibility button', () => {
-    const queryInput = () => fixture.debugElement.query(By.css('input[formControlName="password"]')).nativeElement as HTMLInputElement;
-    const queryToggle = () => {
-      const selector = 'button[aria-label="Show password"], button[aria-label="Hide password"]';
-      return fixture.debugElement.query(By.css(selector)).nativeElement as HTMLButtonElement;
-    };
-
-    fixture.detectChanges();
-
-    expect(queryInput().type).toEqual('password');
-    expect(queryToggle().getAttribute('aria-label')).toEqual('Show password');
-
-    queryToggle().click();
-    fixture.detectChanges();
-
-    expect(queryInput().type).toEqual('text');
-    expect(queryToggle().getAttribute('aria-label')).toEqual('Hide password');
-
-    queryToggle().click();
-    fixture.detectChanges();
-
-    expect(queryInput().type).toEqual('password');
   });
 
   it('should not submit a second time while a request is already in flight', async () => {
