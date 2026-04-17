@@ -2,13 +2,15 @@ import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { AuthenticationService } from './authentication.service';
+import { AUTH_TOKEN_STORAGE_KEY, AuthenticationService } from './authentication.service';
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
   let httpTesting: HttpTestingController;
 
   beforeEach(() => {
+    localStorage.clear();
+
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
       teardown: { destroyAfterEach: true }
@@ -20,6 +22,7 @@ describe('AuthenticationService', () => {
 
   afterEach(() => {
     httpTesting.verify();
+    localStorage.clear();
   });
 
   it('should be created', () => {
@@ -104,6 +107,37 @@ describe('AuthenticationService', () => {
 
       expect(receivedError).toBeDefined();
       expect(receivedError?.status).toEqual(401);
+    });
+
+    it('should persist the token in localStorage on success', () => {
+      service.login('alice', 'secret-pw').subscribe();
+
+      const request = httpTesting.expectOne('/popcorn-index/api/v1/authentication/login');
+      request.flush({ token: 'jwt-token' });
+
+      expect(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toEqual('jwt-token');
+    });
+
+    it('should not persist a token in localStorage when the server returns an error', () => {
+      service.login('alice', 'wrong-pw').subscribe({ error: () => undefined });
+
+      const request = httpTesting.expectOne('/popcorn-index/api/v1/authentication/login');
+      request.flush(null, { status: 401, statusText: 'Unauthorized' });
+
+      expect(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toBeNull();
+    });
+  });
+
+  describe('getToken', () => {
+    it('should return the token stored by a successful login', () => {
+      service.login('alice', 'secret-pw').subscribe();
+      httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: 'jwt-token' });
+
+      expect(service.getToken()).toEqual('jwt-token');
+    });
+
+    it('should return null when no token has been stored', () => {
+      expect(service.getToken()).toBeNull();
     });
   });
 });

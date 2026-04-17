@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 /**
  * Shape of the response body returned by the `login` endpoint
@@ -9,6 +9,12 @@ import { Observable } from 'rxjs';
 export interface LoginResponse {
   token: string;
 }
+
+/**
+ * localStorage key under which the JWT token issued by the
+ * backend on successful login is persisted.
+ */
+export const AUTH_TOKEN_STORAGE_KEY = 'popcorn-index:auth-token';
 
 /**
  * Handles authentication-related HTTP interactions
@@ -33,12 +39,24 @@ export class AuthenticationService {
 
   /**
    * Authenticates an existing user with the given credentials.
+   * Persists the issued token in `localStorage` as a side effect
+   * so it can be reused by subsequent requests.
    *
    * @param username Account username.
    * @param password Plain-text password, transmitted over HTTPS.
    * @returns Observable emitting the issued JWT token on success.
    */
   public login(username: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, { username, password });
+    return this.http
+      .post<LoginResponse>(`${this.baseUrl}/login`, { username, password })
+      .pipe(tap((response) => localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, response.token)));
+  }
+
+  /**
+   * Returns the JWT token persisted on the last successful login,
+   * or `null` if no token is currently stored.
+   */
+  public getToken(): string | null {
+    return localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
   }
 }
