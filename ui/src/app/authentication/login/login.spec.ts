@@ -46,6 +46,20 @@ describe('Login', () => {
     expect(passwordField).not.toBeNull();
   });
 
+  it('should toggle the password visibility when the toggle button is clicked', async () => {
+    const passwordInput = await materialTesting.matFormField.getMatInput('Password');
+
+    expect(await passwordInput.getType()).toEqual('password');
+
+    await materialTesting.matIconButton.click('fa-solid');
+
+    expect(await passwordInput.getType()).toEqual('text');
+
+    await materialTesting.matIconButton.click('fa-solid');
+
+    expect(await passwordInput.getType()).toEqual('password');
+  });
+
   ['Username', 'Password'].forEach((field) => {
     it(`should show a required error when the ${field.toLowerCase()} is empty`, async () => {
       await materialTesting.matFormField.setMatInputValue(field, 'something');

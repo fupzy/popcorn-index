@@ -46,6 +46,24 @@ describe('Register', () => {
     expect(passwordFields).toHaveLength(2);
   });
 
+  it('should toggle the password visibility when the toggle button is clicked', async () => {
+    const passwordInput = await materialTesting.matFormField.getMatInput('Password');
+    const confirmInput = await materialTesting.matFormField.getMatInput('Confirm password');
+
+    expect(await passwordInput.getType()).toEqual('password');
+    expect(await confirmInput.getType()).toEqual('password');
+
+    await materialTesting.matIconButton.click('fa-solid');
+
+    expect(await passwordInput.getType()).toEqual('text');
+    expect(await confirmInput.getType()).toEqual('text');
+
+    await materialTesting.matIconButton.click('fa-solid');
+
+    expect(await passwordInput.getType()).toEqual('password');
+    expect(await confirmInput.getType()).toEqual('password');
+  });
+
   [
     { field: 'Username', value: 'ab', expectedError: 'at least 3 characters' },
     { field: 'Password', value: 'abc', expectedError: 'at least 6 characters' }
