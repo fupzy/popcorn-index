@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 
@@ -16,7 +16,7 @@ import { PasswordField } from '../password-field/password-field';
  */
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, MatError, MatFormField, MatLabel, MatInput, AuthFormShell, PasswordField],
+  imports: [ReactiveFormsModule, RouterLink, MatError, MatFormField, MatLabel, MatInput, AuthFormShell, PasswordField],
   templateUrl: './login.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

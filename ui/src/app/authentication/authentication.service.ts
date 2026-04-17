@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Signal, computed, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
 /**
@@ -22,9 +22,27 @@ export const AUTH_TOKEN_STORAGE_KEY = 'popcorn-index:auth-token';
  */
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
+  /**
+   * Reactive view of the JWT token persisted on the last successful login.
+   * Emits `null` when no token is currently stored.
+   */
+  public readonly token: Signal<string | null>;
+
+  /**
+   * Reactive flag indicating whether a token is currently stored.
+   */
+  public readonly isAuthenticated: Signal<boolean>;
+
   private readonly baseUrl = '/popcorn-index/api/v1/authentication';
 
   private readonly http = inject(HttpClient);
+
+  private readonly tokenSignal = signal<string | null>(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY));
+
+  constructor() {
+    this.token = this.tokenSignal.asReadonly();
+    this.isAuthenticated = computed(() => this.tokenSignal() !== null);
+  }
 
   /**
    * Registers a new user with the given credentials.
@@ -47,9 +65,21 @@ export class AuthenticationService {
    * @returns Observable emitting the issued JWT token on success.
    */
   public login(username: string, password: string): Observable<LoginResponse> {
-    return this.http
-      .post<LoginResponse>(`${this.baseUrl}/login`, { username, password })
-      .pipe(tap((response) => localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, response.token)));
+    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, { username, password }).pipe(
+      tap((response) => {
+        localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, response.token);
+        this.tokenSignal.set(response.token);
+      })
+    );
+  }
+
+  /**
+   * Clears the persisted token. Subsequent requests that rely on
+   * authentication will need to log in again.
+   */
+  public logout(): void {
+    localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+    this.tokenSignal.set(null);
   }
 
   /**
@@ -57,6 +87,6 @@ export class AuthenticationService {
    * or `null` if no token is currently stored.
    */
   public getToken(): string | null {
-    return localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+    return this.tokenSignal();
   }
 }

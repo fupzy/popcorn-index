@@ -46,6 +46,18 @@ describe('Login', () => {
     expect(passwordField).not.toBeNull();
   });
 
+  it('should render a Sign up link that navigates to /register', async () => {
+    const link = fixture.debugElement.query(By.css('a[routerLink="/register"]'));
+
+    expect(link).not.toBeNull();
+    expect(link.nativeElement.textContent).toContain('Sign up');
+
+    link.nativeElement.click();
+    await fixture.whenStable();
+
+    expect(router.url).toEqual('/register');
+  });
+
   it('should toggle the password visibility when the toggle button is clicked', async () => {
     const passwordInput = await materialTesting.matFormField.getMatInput('Password');
 

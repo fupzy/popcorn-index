@@ -1,1 +1,11 @@
-<button mat-button routerLink="home" class="text-white! text-xl!">Home</button>
+<div class="flex flex-1 items-center">
+  <button mat-button routerLink="home" class="text-white! text-xl!">Home</button>
+
+  <span class="flex-1"></span>
+
+  @if (isAuthenticated()) {
+    <button mat-button (click)="logout()" class="text-white! text-xl!">Logout</button>
+  } @else {
+    <button mat-button routerLink="login" class="text-white! text-xl!">Login</button>
+  }
+</div>

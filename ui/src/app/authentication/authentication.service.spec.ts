@@ -140,4 +140,49 @@ describe('AuthenticationService', () => {
       expect(service.getToken()).toBeNull();
     });
   });
+
+  describe('isAuthenticated', () => {
+    it('should be false when no token has been stored', () => {
+      expect(service.isAuthenticated()).toEqual(false);
+    });
+
+    it('should be true once a login succeeds and false again after logout', () => {
+      service.login('alice', 'secret-pw').subscribe();
+      httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: 'jwt-token' });
+
+      expect(service.isAuthenticated()).toEqual(true);
+
+      service.logout();
+
+      expect(service.isAuthenticated()).toEqual(false);
+    });
+  });
+
+  describe('logout', () => {
+    it('should clear the persisted token', () => {
+      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, 'jwt-token');
+
+      service.logout();
+
+      expect(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toBeNull();
+      expect(service.getToken()).toBeNull();
+    });
+  });
+
+  describe('initial state', () => {
+    it('should hydrate the token from localStorage when the service is constructed', () => {
+      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, 'persisted-token');
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [provideHttpClient(), provideHttpClientTesting()],
+        teardown: { destroyAfterEach: true }
+      });
+
+      const freshService = TestBed.inject(AuthenticationService);
+
+      expect(freshService.getToken()).toEqual('persisted-token');
+      expect(freshService.isAuthenticated()).toEqual(true);
+    });
+  });
 });

@@ -22,4 +22,8 @@
     [hidden]="hidePassword()"
     [errors]="{ required: 'Password is required' }"
     (visibilityToggle)="togglePasswordVisibility()" />
+
+  <p class="text-sm text-center">
+    Don't have an account? <a routerLink="/register" class="text-blue-600 hover:underline">Sign up</a>
+  </p>
 </app-auth-form-shell>
