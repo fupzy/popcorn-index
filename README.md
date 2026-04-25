@@ -1,5 +1,22 @@
 # popcorn-index
 
+## Environment variables
+
+The backend proxies TMDB calls and requires an API key exposed as an environment variable.
+
+- `TMDB_API_KEY` — your TMDB v3 API key (get one at https://www.themoviedb.org/settings/api).
+
+### How to set it (Windows)
+
+Via PowerShell (persistent, User scope) :
+```
+setx TMDB_API_KEY "your_api_key_here"
+```
+
+Or via `Paramètres Windows > Système > Informations système > Paramètres système avancés > Variables d'environnement`.
+
+> Close and reopen your terminal / IDE after setting the variable — running processes keep a frozen copy of the environment.
+
 ## Database
 
 ### Infos

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using TestingUtilities;
 using Users.Domain;
 
@@ -15,6 +16,10 @@ internal sealed class TestingServicesRegistrator : ITestingServicesRegistrator
         services
             .Replace(new ServiceDescriptor(typeof(IPasswordHasher<User>), new MockPasswordHasher()))
             .Replace(new ServiceDescriptor(typeof(IJwtService), new MockJwtService()));
+
+        services.AddSingleton<MockTmdbHandler>();
+        services.AddHttpClient(Options.DefaultName)
+            .ConfigurePrimaryHttpMessageHandler<MockTmdbHandler>();
 
         return services;
     }
