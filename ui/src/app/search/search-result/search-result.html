@@ -1,0 +1,29 @@
+@if (isLoading()) {
+  <div class="flex flex-1 items-center justify-center">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+  </div>
+} @else if (errorMessage() !== null) {
+  <div class="flex flex-1 items-center justify-center text-red-600" role="alert">
+    {{ errorMessage() }}
+  </div>
+} @else if (!hasResults()) {
+  <div class="flex flex-1 items-center justify-center opacity-60">No results yet — start typing a movie title.</div>
+} @else {
+  <ul class="grid grid-cols-2 gap-4 p-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full">
+    @for (movie of movies(); track movie.id) {
+      <li class="flex flex-col gap-2">
+        @if (posterUrl(movie); as poster) {
+          <img [src]="poster" [alt]="movie.title" class="w-full rounded-lg shadow-md aspect-2/3 object-cover" />
+        } @else {
+          <div class="w-full rounded-lg bg-gray-200 aspect-2/3 flex items-center justify-center text-sm opacity-60">No poster</div>
+        }
+        <div class="flex flex-col">
+          <span class="font-semibold">{{ movie.title }}</span>
+          @if (movie.release_date) {
+            <span class="text-sm opacity-70">{{ movie.release_date }}</span>
+          }
+        </div>
+      </li>
+    }
+  </ul>
+}
