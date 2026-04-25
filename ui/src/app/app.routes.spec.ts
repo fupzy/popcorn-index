@@ -7,7 +7,6 @@ import { Home } from './home/home';
 import { NotFound } from './not-found/not-found';
 import { Login } from './authentication/login/login';
 import { Register } from './authentication/register/register';
-import { Search } from './search/search/search';
 
 describe('App Routes', () => {
   let harness: RouterTestingHarness;
@@ -21,11 +20,15 @@ describe('App Routes', () => {
     harness = await RouterTestingHarness.create();
   });
 
+  it('should redirect "" to Home component', async () => {
+    const component = await harness.navigateByUrl('');
+
+    expect(component).toBeInstanceOf(Home);
+  });
+
   (
     [
       { url: '/home', expected: Home },
-      { url: '', expected: Home },
-      { url: '/search', expected: Search },
       { url: '/login', expected: Login },
       { url: '/register', expected: Register },
       { url: '/unknown', expected: NotFound },

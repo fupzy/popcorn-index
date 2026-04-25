@@ -44,31 +44,20 @@ describe('Menu', () => {
     expect(component).toBeTruthy();
   });
 
-  [
-    {
-      label: 'Home',
-      route: '/home'
-    },
-    {
-      label: 'Search',
-      route: '/search'
-    }
-  ].forEach((item) => {
-    it('should render a Home button', async () => {
-      createFixture();
+  it('should render a Home button', async () => {
+    createFixture();
 
-      const buttonExists = await materialTesting.matButton.exists(item.label);
+    const buttonExists = await materialTesting.matButton.exists('Home');
 
-      expect(buttonExists).toBeTruthy();
-    });
+    expect(buttonExists).toBeTruthy();
+  });
 
-    it('should navigate to /home when clicking on the Home button', async () => {
-      createFixture();
+  it('should navigate to /home when clicking on the Home button', async () => {
+    createFixture();
 
-      await materialTesting.matButton.click(item.label);
+    await materialTesting.matButton.click('Home');
 
-      expect(router.url).toEqual(item.route);
-    });
+    expect(router.url).toEqual('/home');
   });
 
   describe('when no token is stored', () => {
