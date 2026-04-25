@@ -1,0 +1,9 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex w-full">
+  <mat-form-field class="flex-1">
+    <mat-label>Search a movie</mat-label>
+    <input matInput type="search" formControlName="query" />
+    <button matSuffix mat-icon-button type="submit" aria-label="Search">
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+</form>
