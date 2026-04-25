@@ -74,7 +74,8 @@ export class AuthenticationService {
 
   private readonly baseUrl = '/popcorn-index/api/v1/authentication';
 
-  private readonly httpClient = inject(HttpClient);
+  private readonly http = inject(HttpClient);
+
   private readonly router = inject(Router);
 
   private readonly tokenSignal = signal<string | null>(null);
@@ -108,7 +109,7 @@ export class AuthenticationService {
    * @returns Observable that completes when the server acknowledges the registration.
    */
   public register(username: string, password: string): Observable<void> {
-    return this.httpClient.post<void>(`${this.baseUrl}/register`, { username, password });
+    return this.http.post<void>(`${this.baseUrl}/register`, { username, password });
   }
 
   /**
@@ -121,7 +122,7 @@ export class AuthenticationService {
    * @returns Observable emitting the issued JWT token on success.
    */
   public login(username: string, password: string): Observable<LoginResponse> {
-    return this.httpClient
+    return this.http
       .post<LoginResponse>(`${this.baseUrl}/login`, { username, password })
       .pipe(tap((response) => this.applyToken(response.token, true)));
   }
