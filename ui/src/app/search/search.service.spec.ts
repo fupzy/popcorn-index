@@ -75,12 +75,12 @@ describe('SearchService', () => {
     });
 
     it('should emit the parsed list of languages when the server returns a success', () => {
-      const languages: readonly TmdbLanguage[] = [
+      const languages: TmdbLanguage[] = [
         { iso_639_1: 'fr', english_name: 'French', name: 'Français' },
         { iso_639_1: 'en', english_name: 'English', name: 'English' }
       ];
 
-      let received: readonly TmdbLanguage[] | undefined;
+      let received: TmdbLanguage[] | undefined;
       service.getLanguages().subscribe((value) => {
         received = value;
       });

@@ -19,7 +19,7 @@ export interface SearchRequest {
 
 const EMPTY_LANGUAGES: TmdbLanguage[] = [];
 
-const sortLanguages = (list: readonly TmdbLanguage[]): readonly TmdbLanguage[] =>
+const sortLanguages = (list: TmdbLanguage[]): TmdbLanguage[] =>
   [...list].filter((language) => language.english_name.length > 0).sort((a, b) => a.english_name.localeCompare(b.english_name));
 
 @Component({
