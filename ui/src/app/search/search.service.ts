@@ -119,23 +119,23 @@ export class SearchService {
     const params = new HttpParams().append('query', query).append('language', language);
 
     if (mediaType === 'movie') {
-      return this.httpClient
-        .get<RawTmdbResponse<RawMovieResult>>(`${this.baseUrl}/search/movie`, { params })
-        .pipe(map((response) => toTmdbSearchResponse(response, movieToMedia)));
+      return this.fetchSearch<RawMovieResult>('search/movie', params, movieToMedia);
     }
 
     if (mediaType === 'tv') {
-      return this.httpClient
-        .get<RawTmdbResponse<RawTvResult>>(`${this.baseUrl}/search/tv`, { params })
-        .pipe(map((response) => toTmdbSearchResponse(response, tvToMedia)));
+      return this.fetchSearch<RawTvResult>('search/tv', params, tvToMedia);
     }
 
-    return this.httpClient
-      .get<RawTmdbResponse<RawMultiResult>>(`${this.baseUrl}/search/multi`, { params })
-      .pipe(map((response) => toTmdbSearchResponse(response, multiToMedia)));
+    return this.fetchSearch<RawMultiResult>('search/multi', params, multiToMedia);
   }
 
   public getLanguages(): Observable<TmdbLanguage[]> {
     return this.httpClient.get<TmdbLanguage[]>(`${this.baseUrl}/configuration/languages`);
+  }
+
+  private fetchSearch<T>(path: string, params: HttpParams, toMedia: (raw: T) => TmdbMedia | null): Observable<TmdbSearchResponse> {
+    return this.httpClient
+      .get<RawTmdbResponse<T>>(`${this.baseUrl}/${path}`, { params })
+      .pipe(map((response) => toTmdbSearchResponse(response, toMedia)));
   }
 }
