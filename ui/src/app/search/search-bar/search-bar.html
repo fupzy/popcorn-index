@@ -1,9 +1,17 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex w-full">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex w-full gap-2">
   <mat-form-field class="flex-1">
     <mat-label>Search a movie</mat-label>
     <input matInput type="search" formControlName="query" />
     <button matSuffix mat-icon-button type="submit" aria-label="Search">
       <mat-icon>search</mat-icon>
     </button>
+  </mat-form-field>
+  <mat-form-field class="w-48">
+    <mat-label>Language</mat-label>
+    <mat-select formControlName="language">
+      @for (language of languages(); track language.iso_639_1) {
+        <mat-option [value]="language.iso_639_1">{{ language.english_name }}</mat-option>
+      }
+    </mat-select>
   </mat-form-field>
 </form>

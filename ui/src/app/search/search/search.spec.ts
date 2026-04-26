@@ -3,12 +3,13 @@ import { By } from '@angular/platform-browser';
 import { Observable, Subject, of, throwError } from 'rxjs';
 import { Mock } from 'vitest';
 
+import { SearchRequest } from '../search-bar/search-bar';
 import { SearchResult } from '../search-result/search-result';
 import { SearchService, TmdbMovie, TmdbSearchResponse } from '../search.service';
 
 import { Search } from './search';
 
-type SearchMoviesFn = (query: string) => Observable<TmdbSearchResponse>;
+type SearchMoviesFn = (query: string, language: string) => Observable<TmdbSearchResponse>;
 
 const mockMovie: TmdbMovie = {
   id: 603,
@@ -33,12 +34,15 @@ const response: TmdbSearchResponse = {
   total_results: 1
 };
 
+const matrixSearch: SearchRequest = { query: 'matrix', language: 'fr' };
+const inceptionSearch: SearchRequest = { query: 'inception', language: 'fr' };
+
 describe('Search', () => {
   let fixture: ComponentFixture<Search>;
   let searchMoviesSpy: Mock<SearchMoviesFn>;
 
-  const triggerSearch = (query: string): void => {
-    fixture.debugElement.query(By.css('app-search-bar')).triggerEventHandler('searchRequested', query);
+  const triggerSearch = (request: SearchRequest): void => {
+    fixture.debugElement.query(By.css('app-search-bar')).triggerEventHandler('searchRequested', request);
     fixture.detectChanges();
   };
 
@@ -50,7 +54,7 @@ describe('Search', () => {
 
     TestBed.configureTestingModule({
       imports: [Search],
-      providers: [{ provide: SearchService, useValue: { searchMovies: searchMoviesSpy } }],
+      providers: [{ provide: SearchService, useValue: { searchMovies: searchMoviesSpy, getLanguages: () => of([]) } }],
       teardown: { destroyAfterEach: true }
     });
 
@@ -63,16 +67,16 @@ describe('Search', () => {
     expect(fixture.debugElement.query(By.css('app-search-result'))).not.toBeNull();
   });
 
-  it('should call SearchService.searchMovies with the query emitted by the SearchBar', () => {
-    triggerSearch('matrix');
+  it('should call SearchService.searchMovies with the query and language emitted by the SearchBar', () => {
+    triggerSearch(matrixSearch);
 
-    expect(searchMoviesSpy).toHaveBeenCalledExactlyOnceWith('matrix');
+    expect(searchMoviesSpy).toHaveBeenCalledExactlyOnceWith('matrix', 'fr');
   });
 
   it('should pass the service results to the SearchResult on success', () => {
     searchMoviesSpy.mockReturnValue(of(response));
 
-    triggerSearch('matrix');
+    triggerSearch(matrixSearch);
 
     const searchResult = getSearchResult();
     expect(searchResult.movies()).toEqual(response.results);
@@ -83,7 +87,7 @@ describe('Search', () => {
   it('should pass an empty list and an error message to the SearchResult on error', () => {
     searchMoviesSpy.mockReturnValue(throwError(() => new Error('boom')));
 
-    triggerSearch('matrix');
+    triggerSearch(matrixSearch);
 
     const searchResult = getSearchResult();
     expect(searchResult.movies()).toEqual([]);
@@ -95,10 +99,10 @@ describe('Search', () => {
     const inFlight = new Subject<TmdbSearchResponse>();
     searchMoviesSpy.mockReturnValue(inFlight.asObservable());
 
-    triggerSearch('matrix');
-    triggerSearch('inception');
+    triggerSearch(matrixSearch);
+    triggerSearch(inceptionSearch);
 
-    expect(searchMoviesSpy).toHaveBeenCalledExactlyOnceWith('matrix');
+    expect(searchMoviesSpy).toHaveBeenCalledExactlyOnceWith('matrix', 'fr');
 
     inFlight.complete();
   });
