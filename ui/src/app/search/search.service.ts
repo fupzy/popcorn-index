@@ -18,6 +18,12 @@ export interface TmdbSearchResponse {
   readonly total_results: number;
 }
 
+export interface TmdbLanguage {
+  readonly iso_639_1: string;
+  readonly english_name: string;
+  readonly name: string;
+}
+
 /**
  * Searches TMDB through the backend proxy at `/api/v1/tmdb`.
  * The proxy injects the TMDB API key server-side, so the
@@ -29,8 +35,12 @@ export class SearchService {
 
   private readonly httpClient = inject(HttpClient);
 
-  public searchMovies(query: string): Observable<TmdbSearchResponse> {
-    const params = new HttpParams().set('query', query).set('language', 'fr-FR');
+  public searchMovies(query: string, language: string): Observable<TmdbSearchResponse> {
+    const params = new HttpParams().append('query', query).append('language', language);
     return this.httpClient.get<TmdbSearchResponse>(`${this.baseUrl}/search/movie`, { params });
+  }
+
+  public getLanguages(): Observable<TmdbLanguage[]> {
+    return this.httpClient.get<TmdbLanguage[]>(`${this.baseUrl}/configuration/languages`);
   }
 }

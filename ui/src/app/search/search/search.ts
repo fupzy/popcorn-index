@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 
-import { SearchBar } from '../search-bar/search-bar';
+import { SearchBar, SearchRequest } from '../search-bar/search-bar';
 import { SearchResult } from '../search-result/search-result';
 import { SearchService, TmdbMovie } from '../search.service';
 
@@ -21,7 +21,7 @@ export class Search {
 
   private readonly searchService = inject(SearchService);
 
-  protected onSearch(query: string): void {
+  protected onSearch(request: SearchRequest): void {
     if (this.isSearching()) {
       return;
     }
@@ -29,7 +29,7 @@ export class Search {
     this.isSearching.set(true);
     this.errorMessage.set(null);
 
-    this.searchService.searchMovies(query).subscribe({
+    this.searchService.searchMovies(request.query, request.language).subscribe({
       next: (response) => {
         this.movies.set(response.results);
         this.isSearching.set(false);
