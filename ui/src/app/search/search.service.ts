@@ -40,7 +40,7 @@ export class SearchService {
     return this.httpClient.get<TmdbSearchResponse>(`${this.baseUrl}/search/movie`, { params });
   }
 
-  public getLanguages(): Observable<readonly TmdbLanguage[]> {
-    return this.httpClient.get<readonly TmdbLanguage[]>(`${this.baseUrl}/configuration/languages`);
+  public getLanguages(): Observable<TmdbLanguage[]> {
+    return this.httpClient.get<TmdbLanguage[]>(`${this.baseUrl}/configuration/languages`);
   }
 }
