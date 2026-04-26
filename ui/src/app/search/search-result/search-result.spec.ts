@@ -5,39 +5,40 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/testing';
 
-import { TmdbMovie } from '../search.service';
+import { TmdbMedia } from '../search.service';
 
 import { SearchResult } from './search-result';
 
 @Component({
   imports: [SearchResult],
-  template: ` <app-search-result [movies]="movies()" [isLoading]="isLoading()" [errorMessage]="errorMessage()"></app-search-result> `,
+  template: ` <app-search-result [results]="results()" [isLoading]="isLoading()" [errorMessage]="errorMessage()"></app-search-result> `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  public readonly movies = signal<readonly TmdbMovie[]>([]);
+  public readonly results = signal<TmdbMedia[]>([]);
   public readonly isLoading = signal(false);
   public readonly errorMessage = signal<string | null>(null);
 }
 
-const mockMovies: TmdbMovie[] = [
-  {
-    id: 603,
-    title: 'The Matrix',
-    overview: 'A hacker discovers reality.',
-    poster_path: '/matrix.jpg',
-    release_date: '1999-03-31',
-    vote_average: 8.2
-  },
-  {
-    id: 27205,
-    title: 'Inception',
-    overview: 'A thief enters dreams.',
-    poster_path: '/inception.jpg',
-    release_date: '2010-07-15',
-    vote_average: 8.4
-  }
-];
+const mockMovie: TmdbMedia = {
+  id: 603,
+  mediaType: 'movie',
+  title: 'The Matrix',
+  overview: 'A hacker discovers reality.',
+  poster_path: '/matrix.jpg',
+  date: '1999-03-31',
+  vote_average: 8.2
+};
+
+const mockTv: TmdbMedia = {
+  id: 1399,
+  mediaType: 'tv',
+  title: 'Game of Thrones',
+  overview: 'Seven noble families fight for the throne.',
+  poster_path: '/got.jpg',
+  date: '2011-04-17',
+  vote_average: 8.4
+};
 
 describe('SearchResult', () => {
   let fixture: ComponentFixture<TestComponent>;
@@ -62,7 +63,7 @@ describe('SearchResult', () => {
     expect(element).not.toBeNull();
   });
 
-  it('should display the empty-state message when not loading and no movies are provided', () => {
+  it('should display the empty-state message when not loading and no results are provided', () => {
     const text = fixture.debugElement.nativeElement.textContent;
 
     expect(text).toContain('No results yet');
@@ -87,21 +88,23 @@ describe('SearchResult', () => {
     expect(alert.nativeElement.textContent).toContain('Something went wrong');
   });
 
-  it('should render one list item per movie with title and release date', () => {
-    host.movies.set(mockMovies);
+  it('should render one list item per result with title, type label and date', () => {
+    host.results.set([mockMovie, mockTv]);
     fixture.detectChanges();
 
     const items = fixture.debugElement.queryAll(By.css('li'));
 
     expect(items).toHaveLength(2);
     expect(items[0].nativeElement.textContent).toContain('The Matrix');
+    expect(items[0].nativeElement.textContent).toContain('Movie');
     expect(items[0].nativeElement.textContent).toContain('1999-03-31');
-    expect(items[1].nativeElement.textContent).toContain('Inception');
-    expect(items[1].nativeElement.textContent).toContain('2010-07-15');
+    expect(items[1].nativeElement.textContent).toContain('Game of Thrones');
+    expect(items[1].nativeElement.textContent).toContain('TV');
+    expect(items[1].nativeElement.textContent).toContain('2011-04-17');
   });
 
   it('should render the TMDB poster URL when poster_path is provided', () => {
-    host.movies.set([mockMovies[0]]);
+    host.results.set([mockMovie]);
     fixture.detectChanges();
 
     const img = fixture.debugElement.query(By.css('li img'));
@@ -111,21 +114,22 @@ describe('SearchResult', () => {
     expect(img.nativeElement.getAttribute('alt')).toEqual('The Matrix');
   });
 
-  it('should render a fallback placeholder when the movie has no poster_path', () => {
-    host.movies.set([{ ...mockMovies[0], poster_path: null }]);
+  it('should render a fallback placeholder when the result has no poster_path', () => {
+    host.results.set([{ ...mockMovie, poster_path: null }]);
     fixture.detectChanges();
 
     expect(fixture.debugElement.query(By.css('li img'))).toBeNull();
     expect(fixture.debugElement.nativeElement.textContent).toContain('No poster');
   });
 
-  it('should not render the release date span when release_date is empty', () => {
-    host.movies.set([{ ...mockMovies[0], release_date: '' }]);
+  it('should not render the date span when date is null', () => {
+    host.results.set([{ ...mockMovie, date: null }]);
     fixture.detectChanges();
 
     const item = fixture.debugElement.query(By.css('li'));
-    const dateSpans = item.queryAll(By.css('span.text-sm'));
+    const text = item.nativeElement.textContent;
 
-    expect(dateSpans).toHaveLength(0);
+    expect(text).not.toContain('1999-03-31');
+    expect(text).toContain('Movie');
   });
 });

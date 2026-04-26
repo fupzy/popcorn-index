@@ -5,18 +5,19 @@ import { Mock } from 'vitest';
 
 import { SearchRequest } from '../search-bar/search-bar';
 import { SearchResult } from '../search-result/search-result';
-import { SearchService, TmdbMovie, TmdbSearchResponse } from '../search.service';
+import { MediaTypeFilter, SearchService, TmdbMedia, TmdbSearchResponse } from '../search.service';
 
 import { Search } from './search';
 
-type SearchMoviesFn = (query: string, language: string) => Observable<TmdbSearchResponse>;
+type SearchFn = (query: string, language: string, mediaType: MediaTypeFilter) => Observable<TmdbSearchResponse>;
 
-const mockMovie: TmdbMovie = {
+const mockMedia: TmdbMedia = {
   id: 603,
+  mediaType: 'movie',
   title: 'The Matrix',
   overview: 'A hacker discovers reality.',
   poster_path: '/matrix.jpg',
-  release_date: '1999-03-31',
+  date: '1999-03-31',
   vote_average: 8.2
 };
 
@@ -29,17 +30,17 @@ const emptyResponse: TmdbSearchResponse = {
 
 const response: TmdbSearchResponse = {
   page: 1,
-  results: [mockMovie],
+  results: [mockMedia],
   total_pages: 1,
   total_results: 1
 };
 
-const matrixSearch: SearchRequest = { query: 'matrix', language: 'fr' };
-const inceptionSearch: SearchRequest = { query: 'inception', language: 'fr' };
+const matrixSearch: SearchRequest = { query: 'matrix', language: 'fr', mediaType: 'all' };
+const inceptionSearch: SearchRequest = { query: 'inception', language: 'fr', mediaType: 'all' };
 
 describe('Search', () => {
   let fixture: ComponentFixture<Search>;
-  let searchMoviesSpy: Mock<SearchMoviesFn>;
+  let searchSpy: Mock<SearchFn>;
 
   const triggerSearch = (request: SearchRequest): void => {
     fixture.debugElement.query(By.css('app-search-bar')).triggerEventHandler('searchRequested', request);
@@ -49,12 +50,12 @@ describe('Search', () => {
   const getSearchResult = (): SearchResult => fixture.debugElement.query(By.directive(SearchResult)).componentInstance as SearchResult;
 
   beforeEach(() => {
-    searchMoviesSpy = vi.fn<SearchMoviesFn>();
-    searchMoviesSpy.mockReturnValue(of(emptyResponse));
+    searchSpy = vi.fn<SearchFn>();
+    searchSpy.mockReturnValue(of(emptyResponse));
 
     TestBed.configureTestingModule({
       imports: [Search],
-      providers: [{ provide: SearchService, useValue: { searchMovies: searchMoviesSpy, getLanguages: () => of([]) } }],
+      providers: [{ provide: SearchService, useValue: { search: searchSpy, getLanguages: () => of([]) } }],
       teardown: { destroyAfterEach: true }
     });
 
@@ -67,42 +68,42 @@ describe('Search', () => {
     expect(fixture.debugElement.query(By.css('app-search-result'))).not.toBeNull();
   });
 
-  it('should call SearchService.searchMovies with the query and language emitted by the SearchBar', () => {
+  it('should call SearchService.search with the query, language and mediaType emitted by the SearchBar', () => {
     triggerSearch(matrixSearch);
 
-    expect(searchMoviesSpy).toHaveBeenCalledExactlyOnceWith('matrix', 'fr');
+    expect(searchSpy).toHaveBeenCalledExactlyOnceWith('matrix', 'fr', 'all');
   });
 
   it('should pass the service results to the SearchResult on success', () => {
-    searchMoviesSpy.mockReturnValue(of(response));
+    searchSpy.mockReturnValue(of(response));
 
     triggerSearch(matrixSearch);
 
     const searchResult = getSearchResult();
-    expect(searchResult.movies()).toEqual(response.results);
+    expect(searchResult.results()).toEqual(response.results);
     expect(searchResult.isLoading()).toEqual(false);
     expect(searchResult.errorMessage()).toBeNull();
   });
 
   it('should pass an empty list and an error message to the SearchResult on error', () => {
-    searchMoviesSpy.mockReturnValue(throwError(() => new Error('boom')));
+    searchSpy.mockReturnValue(throwError(() => new Error('boom')));
 
     triggerSearch(matrixSearch);
 
     const searchResult = getSearchResult();
-    expect(searchResult.movies()).toEqual([]);
+    expect(searchResult.results()).toEqual([]);
     expect(searchResult.errorMessage()).toContain('Unable to search movies');
     expect(searchResult.isLoading()).toEqual(false);
   });
 
   it('should ignore further search requests while a search is already in flight', () => {
     const inFlight = new Subject<TmdbSearchResponse>();
-    searchMoviesSpy.mockReturnValue(inFlight.asObservable());
+    searchSpy.mockReturnValue(inFlight.asObservable());
 
     triggerSearch(matrixSearch);
     triggerSearch(inceptionSearch);
 
-    expect(searchMoviesSpy).toHaveBeenCalledExactlyOnceWith('matrix', 'fr');
+    expect(searchSpy).toHaveBeenCalledExactlyOnceWith('matrix', 'fr', 'all');
 
     inFlight.complete();
   });
