@@ -127,12 +127,19 @@ describe('SearchResult', () => {
     expect(links[0].nativeElement.getAttribute('href')).toEqual('/movie-detail/603');
   });
 
-  it('should render a fallback placeholder when the result has no poster_path', () => {
-    host.results.set([{ ...mockMovie, poster_path: null }]);
-    fixture.detectChanges();
+  (
+    [
+      { mediaType: 'movie', media: mockMovie },
+      { mediaType: 'tv', media: mockTv }
+    ] as const
+  ).forEach(({ mediaType, media }) => {
+    it(`should render a fallback placeholder when a ${mediaType} result has no poster_path`, () => {
+      host.results.set([{ ...media, poster_path: null }]);
+      fixture.detectChanges();
 
-    expect(fixture.debugElement.query(By.css('li img'))).toBeNull();
-    expect(fixture.debugElement.nativeElement.textContent).toContain('No poster');
+      expect(fixture.debugElement.query(By.css('li img'))).toBeNull();
+      expect(fixture.debugElement.nativeElement.textContent).toContain('No poster');
+    });
   });
 
   it('should not render the date span when date is null', () => {

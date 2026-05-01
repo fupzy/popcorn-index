@@ -92,12 +92,20 @@ describe('MovieDetail', () => {
     expect(fixture.debugElement.nativeElement.textContent).toContain('No poster');
   });
 
-  it('should not render the runtime row when runtime is null', () => {
-    getMovieDetailsSpy.mockReturnValue(of({ ...movieDetails, runtime: null }));
+  [
+    { description: 'tagline paragraph when tagline is empty', overrides: { tagline: '' }, missing: 'Free your mind.' },
+    { description: 'overview paragraph when overview is empty', overrides: { overview: '' }, missing: 'A hacker discovers reality.' },
+    { description: 'release row when release_date is empty', overrides: { release_date: '' }, missing: 'Release' },
+    { description: 'runtime row when runtime is null', overrides: { runtime: null }, missing: 'Runtime' },
+    { description: 'genres row when genres is empty', overrides: { genres: [] }, missing: 'Genres' }
+  ].forEach(({ description, overrides, missing }) => {
+    it(`should not render the ${description}`, () => {
+      getMovieDetailsSpy.mockReturnValue(of({ ...movieDetails, ...overrides }));
 
-    createComponent('603');
+      createComponent('603');
 
-    expect(fixture.debugElement.nativeElement.textContent).not.toContain('Runtime');
+      expect(fixture.debugElement.nativeElement.textContent).not.toContain(missing);
+    });
   });
 
   it('should display a spinner while the details request is pending', async () => {
