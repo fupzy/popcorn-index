@@ -117,14 +117,15 @@ describe('SearchResult', () => {
     expect(img.nativeElement.getAttribute('alt')).toEqual('The Matrix');
   });
 
-  it('should wrap movie posters in a link to /movie-detail/:id and not link tv posters', () => {
+  it('should link movie posters to /movie-detail/:id and tv posters to /series-detail/:id', () => {
     host.results.set([mockMovie, mockTv]);
     fixture.detectChanges();
 
     const links = fixture.debugElement.queryAll(By.css('li a'));
 
-    expect(links).toHaveLength(1);
+    expect(links).toHaveLength(2);
     expect(links[0].nativeElement.getAttribute('href')).toEqual('/movie-detail/603');
+    expect(links[1].nativeElement.getAttribute('href')).toEqual('/series-detail/1399');
   });
 
   (

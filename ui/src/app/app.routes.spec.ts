@@ -10,6 +10,7 @@ import { Login } from './authentication/login/login';
 import { Register } from './authentication/register/register';
 import { MediaDetailService } from './media-detail/media-detail.service';
 import { MovieDetail } from './media-detail/movie-detail/movie-detail';
+import { SeriesDetail } from './media-detail/series-detail/series-detail';
 import { Search } from './search/search/search';
 import { SearchService } from './search/search.service';
 
@@ -21,7 +22,7 @@ describe('App Routes', () => {
       providers: [
         provideRoutingTesting(),
         { provide: SearchService, useValue: { search: () => of(null), getLanguages: () => of([]) } },
-        { provide: MediaDetailService, useValue: { getMovieDetails: () => of(null) } }
+        { provide: MediaDetailService, useValue: { getMovieDetails: () => of(null), getSeriesDetails: () => of(null) } }
       ],
       teardown: { destroyAfterEach: true }
     });
@@ -35,6 +36,7 @@ describe('App Routes', () => {
       { url: '', expected: Home },
       { url: '/search', expected: Search },
       { url: '/movie-detail/603', expected: MovieDetail },
+      { url: '/series-detail/1399', expected: SeriesDetail },
       { url: '/login', expected: Login },
       { url: '/register', expected: Register },
       { url: '/unknown', expected: NotFound },
