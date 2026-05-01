@@ -3,6 +3,8 @@ import { By } from '@angular/platform-browser';
 import { Observable, Subject, of, throwError } from 'rxjs';
 import { Mock } from 'vitest';
 
+import { provideRoutingTesting } from '@testing';
+
 import { SearchRequest } from '../search-bar/search-bar';
 import { SearchResult } from '../search-result/search-result';
 import { MediaTypeFilter, SearchService, TmdbMedia, TmdbSearchResponse } from '../search.service';
@@ -55,7 +57,7 @@ describe('Search', () => {
 
     TestBed.configureTestingModule({
       imports: [Search],
-      providers: [{ provide: SearchService, useValue: { search: searchSpy, getLanguages: () => of([]) } }],
+      providers: [provideRoutingTesting(), { provide: SearchService, useValue: { search: searchSpy, getLanguages: () => of([]) } }],
       teardown: { destroyAfterEach: true }
     });
 

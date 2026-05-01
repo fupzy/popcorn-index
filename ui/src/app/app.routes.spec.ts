@@ -1,20 +1,28 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { of } from 'rxjs';
 
-import { routes } from './app.routes';
+import { provideRoutingTesting } from '@testing';
+
 import { Home } from './home/home';
 import { NotFound } from './not-found/not-found';
 import { Login } from './authentication/login/login';
 import { Register } from './authentication/register/register';
+import { MediaDetailService } from './media-detail/media-detail.service';
+import { MovieDetail } from './media-detail/movie-detail/movie-detail';
 import { Search } from './search/search/search';
+import { SearchService } from './search/search.service';
 
 describe('App Routes', () => {
   let harness: RouterTestingHarness;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      providers: [provideRouter(routes)],
+      providers: [
+        provideRoutingTesting(),
+        { provide: SearchService, useValue: { search: () => of(null), getLanguages: () => of([]) } },
+        { provide: MediaDetailService, useValue: { getMovieDetails: () => of(null) } }
+      ],
       teardown: { destroyAfterEach: true }
     });
 
@@ -26,6 +34,7 @@ describe('App Routes', () => {
       { url: '/home', expected: Home },
       { url: '', expected: Home },
       { url: '/search', expected: Search },
+      { url: '/movie-detail/603', expected: MovieDetail },
       { url: '/login', expected: Login },
       { url: '/register', expected: Register },
       { url: '/unknown', expected: NotFound },

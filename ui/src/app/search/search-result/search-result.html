@@ -12,10 +12,20 @@
   <ul class="grid grid-cols-2 gap-4 p-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full">
     @for (media of results(); track media.mediaType + '-' + media.id) {
       <li class="flex flex-col gap-2">
-        @if (posterUrl(media); as poster) {
-          <img [src]="poster" [alt]="media.title" class="w-full rounded-lg shadow-md aspect-2/3 object-cover" />
+        @if (media.mediaType === 'movie') {
+          <a [routerLink]="['/movie-detail', media.id]" [attr.aria-label]="'View details for ' + media.title" class="block">
+            @if (posterUrl(media); as poster) {
+              <img [src]="poster" [alt]="media.title" class="w-full rounded-lg shadow-md aspect-2/3 object-cover" />
+            } @else {
+              <div class="w-full rounded-lg bg-gray-200 aspect-2/3 flex items-center justify-center text-sm opacity-60">No poster</div>
+            }
+          </a>
         } @else {
-          <div class="w-full rounded-lg bg-gray-200 aspect-2/3 flex items-center justify-center text-sm opacity-60">No poster</div>
+          @if (posterUrl(media); as poster) {
+            <img [src]="poster" [alt]="media.title" class="w-full rounded-lg shadow-md aspect-2/3 object-cover" />
+          } @else {
+            <div class="w-full rounded-lg bg-gray-200 aspect-2/3 flex items-center justify-center text-sm opacity-60">No poster</div>
+          }
         }
         <div class="flex flex-col">
           <span class="font-semibold">{{ media.title }}</span>
