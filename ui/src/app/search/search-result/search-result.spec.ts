@@ -5,6 +5,8 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/testing';
 
+import { provideRoutingTesting } from '@testing';
+
 import { TmdbMedia } from '../search.service';
 
 import { SearchResult } from './search-result';
@@ -48,6 +50,7 @@ describe('SearchResult', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TestComponent],
+      providers: [provideRoutingTesting()],
       teardown: { destroyAfterEach: true }
     });
 
@@ -114,12 +117,29 @@ describe('SearchResult', () => {
     expect(img.nativeElement.getAttribute('alt')).toEqual('The Matrix');
   });
 
-  it('should render a fallback placeholder when the result has no poster_path', () => {
-    host.results.set([{ ...mockMovie, poster_path: null }]);
+  it('should wrap movie posters in a link to /movie-detail/:id and not link tv posters', () => {
+    host.results.set([mockMovie, mockTv]);
     fixture.detectChanges();
 
-    expect(fixture.debugElement.query(By.css('li img'))).toBeNull();
-    expect(fixture.debugElement.nativeElement.textContent).toContain('No poster');
+    const links = fixture.debugElement.queryAll(By.css('li a'));
+
+    expect(links).toHaveLength(1);
+    expect(links[0].nativeElement.getAttribute('href')).toEqual('/movie-detail/603');
+  });
+
+  (
+    [
+      { mediaType: 'movie', media: mockMovie },
+      { mediaType: 'tv', media: mockTv }
+    ] as const
+  ).forEach(({ mediaType, media }) => {
+    it(`should render a fallback placeholder when a ${mediaType} result has no poster_path`, () => {
+      host.results.set([{ ...media, poster_path: null }]);
+      fixture.detectChanges();
+
+      expect(fixture.debugElement.query(By.css('li img'))).toBeNull();
+      expect(fixture.debugElement.nativeElement.textContent).toContain('No poster');
+    });
   });
 
   it('should not render the date span when date is null', () => {

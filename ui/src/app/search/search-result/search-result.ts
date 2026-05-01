@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+
+import { getPosterUrl, PosterWidth } from '@shared';
 
 import { TmdbMedia } from '../search.service';
 
-const TMDB_POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w342';
-
 @Component({
   selector: 'app-search-result',
-  imports: [MatProgressSpinner],
+  imports: [RouterLink, MatProgressSpinner],
   templateUrl: './search-result.html',
   host: {
     class: 'flex flex-col flex-1 h-full w-full min-h-0 overflow-y-auto'
@@ -22,7 +23,7 @@ export class SearchResult {
   protected readonly hasResults = computed(() => this.results().length > 0);
 
   protected posterUrl(media: TmdbMedia): string | null {
-    return media.poster_path !== null ? `${TMDB_POSTER_BASE_URL}${media.poster_path}` : null;
+    return getPosterUrl(media.poster_path, PosterWidth.width342);
   }
 
   protected mediaTypeLabel(media: TmdbMedia): string {
