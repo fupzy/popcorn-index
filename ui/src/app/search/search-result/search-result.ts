@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 import { getPosterUrl, PosterWidth } from '@shared';
+
+import { LoadingShell } from '../../shared/loading-shell/loading-shell';
 
 import { TmdbMedia } from '../search.service';
 
 @Component({
   selector: 'app-search-result',
-  imports: [RouterLink, MatProgressSpinner],
+  imports: [RouterLink, LoadingShell],
   templateUrl: './search-result.html',
   host: {
     class: 'flex flex-col flex-1 h-full w-full min-h-0 overflow-y-auto'

@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { Mock } from 'vitest';
+
+import { LoadingShell } from '../../shared/loading-shell/loading-shell';
 
 import { MediaDetailService, TmdbSeriesDetails } from '../media-detail.service';
 
@@ -29,7 +28,6 @@ const seriesDetails: TmdbSeriesDetails = {
 
 describe('SeriesDetail', () => {
   let fixture: ComponentFixture<SeriesDetail>;
-  let loader: HarnessLoader;
   let getSeriesDetailsSpy: Mock<GetSeriesDetailsFn>;
 
   beforeEach(() => {
@@ -47,8 +45,6 @@ describe('SeriesDetail', () => {
     fixture = TestBed.createComponent(SeriesDetail);
 
     fixture.componentRef.setInput('id', id);
-
-    loader = TestbedHarnessEnvironment.loader(fixture);
 
     fixture.detectChanges();
   };
@@ -108,26 +104,12 @@ describe('SeriesDetail', () => {
     });
   });
 
-  it('should display a spinner while the details request is pending', async () => {
-    getSeriesDetailsSpy.mockReturnValue(new Observable<TmdbSeriesDetails>(() => undefined));
-
-    createComponent('1399');
-
-    const spinner = await loader.getHarnessOrNull(MatProgressSpinnerHarness);
-
-    expect(spinner).toBeTruthy();
-    expect(fixture.debugElement.query(By.css('article'))).toBeNull();
-  });
-
-  it('should display an alert with an error message when the request fails', () => {
+  it('should forward an error message to LoadingShell when the request fails', () => {
     getSeriesDetailsSpy.mockReturnValue(throwError(() => new Error('boom')));
 
     createComponent('1399');
 
-    const alert = fixture.debugElement.query(By.css('[role="alert"]'));
-
-    expect(alert).not.toBeNull();
-    expect(alert.nativeElement.textContent).toContain('Unable to load details');
-    expect(fixture.debugElement.query(By.css('article'))).toBeNull();
+    const loadingShell = fixture.debugElement.query(By.directive(LoadingShell)).componentInstance as LoadingShell;
+    expect(loadingShell.errorMessage()).toContain('Unable to load details');
   });
 });

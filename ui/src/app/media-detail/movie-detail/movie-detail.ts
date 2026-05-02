@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 import { getPosterUrl, PosterWidth } from '@shared';
+
+import { LoadingShell } from '../../shared/loading-shell/loading-shell';
 
 import { MediaDetailService, TmdbMovieDetails } from '../media-detail.service';
 
 @Component({
   selector: 'app-movie-detail',
-  imports: [MatProgressSpinner],
+  imports: [LoadingShell],
   templateUrl: './movie-detail.html',
   host: {
     class: 'flex flex-col flex-1 h-full w-full min-h-0 overflow-y-auto p-4'

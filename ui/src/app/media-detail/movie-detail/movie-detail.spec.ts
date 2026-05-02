@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { Mock } from 'vitest';
+
+import { LoadingShell } from '../../shared/loading-shell/loading-shell';
 
 import { MediaDetailService, TmdbMovieDetails } from '../media-detail.service';
 
@@ -29,7 +28,6 @@ const movieDetails: TmdbMovieDetails = {
 
 describe('MovieDetail', () => {
   let fixture: ComponentFixture<MovieDetail>;
-  let loader: HarnessLoader;
   let getMovieDetailsSpy: Mock<GetMovieDetailsFn>;
 
   beforeEach(() => {
@@ -47,8 +45,6 @@ describe('MovieDetail', () => {
     fixture = TestBed.createComponent(MovieDetail);
 
     fixture.componentRef.setInput('id', id);
-
-    loader = TestbedHarnessEnvironment.loader(fixture);
 
     fixture.detectChanges();
   };
@@ -108,26 +104,12 @@ describe('MovieDetail', () => {
     });
   });
 
-  it('should display a spinner while the details request is pending', async () => {
-    getMovieDetailsSpy.mockReturnValue(new Observable<TmdbMovieDetails>(() => undefined));
-
-    createComponent('603');
-
-    const spinner = await loader.getHarnessOrNull(MatProgressSpinnerHarness);
-
-    expect(spinner).toBeTruthy();
-    expect(fixture.debugElement.query(By.css('article'))).toBeNull();
-  });
-
-  it('should display an alert with an error message when the request fails', () => {
+  it('should forward an error message to LoadingShell when the request fails', () => {
     getMovieDetailsSpy.mockReturnValue(throwError(() => new Error('boom')));
 
     createComponent('603');
 
-    const alert = fixture.debugElement.query(By.css('[role="alert"]'));
-
-    expect(alert).not.toBeNull();
-    expect(alert.nativeElement.textContent).toContain('Unable to load details');
-    expect(fixture.debugElement.query(By.css('article'))).toBeNull();
+    const loadingShell = fixture.debugElement.query(By.directive(LoadingShell)).componentInstance as LoadingShell;
+    expect(loadingShell.errorMessage()).toContain('Unable to load details');
   });
 });
