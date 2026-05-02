@@ -4,25 +4,25 @@ import { getPosterUrl, PosterWidth } from '@shared';
 
 import { LoadingShell } from '../../shared/loading-shell/loading-shell';
 
-import { MediaDetailService, TmdbMovieDetails } from '../media-detail.service';
+import { MediaDetailService, TmdbSeriesDetails } from '../media-detail.service';
 
 @Component({
-  selector: 'app-movie-detail',
+  selector: 'app-series-detail',
   imports: [LoadingShell],
-  templateUrl: './movie-detail.html',
+  templateUrl: './series-detail.html',
   host: {
     class: 'flex flex-col flex-1 h-full w-full min-h-0 overflow-y-auto p-4'
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MovieDetail implements OnInit {
+export class SeriesDetail implements OnInit {
   public readonly id = input.required<string>();
 
-  protected readonly movieDetails = signal<TmdbMovieDetails | null>(null);
+  protected readonly seriesDetails = signal<TmdbSeriesDetails | null>(null);
   protected readonly posterPath = computed<string | null>(() => {
-    const movieDetails = this.movieDetails();
+    const seriesDetails = this.seriesDetails();
 
-    return getPosterUrl(movieDetails?.poster_path, PosterWidth.width500);
+    return getPosterUrl(seriesDetails?.poster_path, PosterWidth.width500);
   });
   protected readonly isLoading = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
@@ -32,17 +32,17 @@ export class MovieDetail implements OnInit {
   public ngOnInit(): void {
     const id = this.id();
 
-    this.loadMovie(id);
+    this.loadSeries(id);
   }
 
-  private loadMovie(id: string): void {
+  private loadSeries(id: string): void {
     this.isLoading.set(true);
     this.errorMessage.set(null);
-    this.movieDetails.set(null);
+    this.seriesDetails.set(null);
 
-    this.mediaDetailService.getMovieDetails(id).subscribe({
+    this.mediaDetailService.getSeriesDetails(id).subscribe({
       next: (details) => {
-        this.movieDetails.set(details);
+        this.seriesDetails.set(details);
         this.isLoading.set(false);
       },
       error: () => {

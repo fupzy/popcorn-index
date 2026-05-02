@@ -1,0 +1,44 @@
+<app-loading-shell [isLoading]="isLoading()" [errorMessage]="errorMessage()">
+  @if (seriesDetails(); as series) {
+    <article class="flex flex-col gap-6 md:flex-row md:items-start">
+      @if (posterPath(); as poster) {
+        <img [src]="poster" [alt]="series.name" class="w-64 rounded-lg shadow-md aspect-2/3 object-cover" />
+      } @else {
+        <div class="w-64 rounded-lg bg-gray-200 aspect-2/3 flex items-center justify-center text-sm opacity-60">No poster</div>
+      }
+      <div class="flex flex-col gap-3 flex-1">
+        <header class="flex flex-col gap-1">
+          <span class="text-xs uppercase tracking-wide font-medium opacity-70">Series</span>
+          <h1 class="text-2xl font-semibold">{{ series.name }}</h1>
+          @if (series.tagline) {
+            <p class="italic opacity-70">{{ series.tagline }}</p>
+          }
+        </header>
+        <dl class="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+          @if (series.first_air_date) {
+            <dt class="font-medium opacity-70">First aired</dt>
+            <dd>{{ series.first_air_date }}</dd>
+          }
+          <dt class="font-medium opacity-70">Rating</dt>
+          <dd>{{ series.vote_average }} / 10</dd>
+          <dt class="font-medium opacity-70">Seasons</dt>
+          <dd>{{ series.number_of_seasons }}</dd>
+          @if (series.genres.length > 0) {
+            <dt class="font-medium opacity-70">Genres</dt>
+            <dd>
+              @for (genre of series.genres; track genre.id) {
+                <span>{{ genre.name }}</span>
+                @if (!$last) {
+                  <span>, </span>
+                }
+              }
+            </dd>
+          }
+        </dl>
+        @if (series.overview) {
+          <p class="leading-relaxed">{{ series.overview }}</p>
+        }
+      </div>
+    </article>
+  }
+</app-loading-shell>

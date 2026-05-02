@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/testing';
 
 import { provideRoutingTesting } from '@testing';
 
@@ -45,7 +42,6 @@ const mockTv: TmdbMedia = {
 describe('SearchResult', () => {
   let fixture: ComponentFixture<TestComponent>;
   let host: TestComponent;
-  let loader: HarnessLoader;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -56,7 +52,6 @@ describe('SearchResult', () => {
 
     fixture = TestBed.createComponent(TestComponent);
     host = fixture.componentInstance;
-    loader = TestbedHarnessEnvironment.loader(fixture);
 
     fixture.detectChanges();
   });
@@ -70,25 +65,6 @@ describe('SearchResult', () => {
     const text = fixture.debugElement.nativeElement.textContent;
 
     expect(text).toContain('No results yet');
-  });
-
-  it('should display a spinner when isLoading is true', async () => {
-    host.isLoading.set(true);
-    fixture.detectChanges();
-
-    const spinner = await loader.getHarnessOrNull(MatProgressSpinnerHarness);
-
-    expect(spinner).toBeTruthy();
-  });
-
-  it('should display an alert with the error message when one is provided', () => {
-    host.errorMessage.set('Something went wrong');
-    fixture.detectChanges();
-
-    const alert = fixture.debugElement.query(By.css('[role="alert"]'));
-
-    expect(alert).not.toBeNull();
-    expect(alert.nativeElement.textContent).toContain('Something went wrong');
   });
 
   it('should render one list item per result with title, type label and date', () => {
@@ -117,14 +93,15 @@ describe('SearchResult', () => {
     expect(img.nativeElement.getAttribute('alt')).toEqual('The Matrix');
   });
 
-  it('should wrap movie posters in a link to /movie-detail/:id and not link tv posters', () => {
+  it('should link movie posters to /movie-detail/:id and tv posters to /series-detail/:id', () => {
     host.results.set([mockMovie, mockTv]);
     fixture.detectChanges();
 
     const links = fixture.debugElement.queryAll(By.css('li a'));
 
-    expect(links).toHaveLength(1);
+    expect(links).toHaveLength(2);
     expect(links[0].nativeElement.getAttribute('href')).toEqual('/movie-detail/603');
+    expect(links[1].nativeElement.getAttribute('href')).toEqual('/series-detail/1399');
   });
 
   (

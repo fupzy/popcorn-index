@@ -1,0 +1,11 @@
+@if (isLoading()) {
+  <div class="flex flex-1 items-center justify-center">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+  </div>
+} @else if (errorMessage() !== null) {
+  <div class="flex flex-1 items-center justify-center text-red-600" role="alert">
+    {{ errorMessage() }}
+  </div>
+} @else {
+  <ng-content></ng-content>
+}
