@@ -8,7 +8,7 @@ import {
   MatExpansionPanelTitle
 } from '@angular/material/expansion';
 
-import { getPosterUrl, LoadingShell, PosterWidth } from '@shared';
+import { BackButton, getPosterUrl, LoadingShell, PosterWidth } from '@shared';
 
 import { MediaDetailService, TmdbSeriesDetails } from '../media-detail.service';
 
@@ -17,6 +17,7 @@ import { SeasonDetail } from './season-detail/season-detail';
 @Component({
   selector: 'app-series-detail',
   imports: [
+    BackButton,
     LoadingShell,
     SeasonDetail,
     MatAccordion,

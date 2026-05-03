@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 
 import { SearchBar, SearchRequest } from '../search-bar/search-bar';
 import { SearchResult } from '../search-result/search-result';
-import { SearchService, TmdbMedia } from '../search.service';
+import { SearchStateService } from '../search-state.service';
+import { SearchService } from '../search.service';
 
 @Component({
   selector: 'app-search',
@@ -15,29 +16,30 @@ import { SearchService, TmdbMedia } from '../search.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Search {
-  protected readonly results = signal<TmdbMedia[]>([]);
-  protected readonly isSearching = signal(false);
-  protected readonly errorMessage = signal<string | null>(null);
+  protected readonly state = inject(SearchStateService);
 
   private readonly searchService = inject(SearchService);
 
   protected onSearch(request: SearchRequest): void {
-    if (this.isSearching()) {
+    if (this.state.isSearching()) {
       return;
     }
 
-    this.isSearching.set(true);
-    this.errorMessage.set(null);
+    this.state.query.set(request.query);
+    this.state.language.set(request.language);
+    this.state.mediaType.set(request.mediaType);
+    this.state.isSearching.set(true);
+    this.state.errorMessage.set(null);
 
     this.searchService.search(request.query, request.language, request.mediaType).subscribe({
       next: (response) => {
-        this.results.set(response.results);
-        this.isSearching.set(false);
+        this.state.results.set(response.results);
+        this.state.isSearching.set(false);
       },
       error: () => {
-        this.results.set([]);
-        this.errorMessage.set('Unable to search movies. Please try again.');
-        this.isSearching.set(false);
+        this.state.results.set([]);
+        this.state.errorMessage.set('Unable to search movies. Please try again.');
+        this.state.isSearching.set(false);
       }
     });
   }

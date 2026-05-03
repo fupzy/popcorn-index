@@ -153,15 +153,19 @@ describe('SeriesDetail', () => {
 
     const loader = TestbedHarnessEnvironment.loader(fixture);
     const panels = await loader.getAllHarnesses(MatExpansionPanelHarness);
+    const firstTitle = await panels[0].getTitle();
+    const firstDescription = await panels[0].getDescription();
+    const secondTitle = await panels[1].getTitle();
+    const secondDescription = await panels[1].getDescription();
 
     expect(panels).toHaveLength(2);
-    expect(await panels[0].getTitle()).toEqual('Season 1');
-    expect(await panels[0].getDescription()).toContain('10 episodes');
-    expect(await panels[0].getDescription()).toContain('8.3 / 10');
-    expect(await panels[0].getDescription()).toContain('2011-04-17');
-    expect(await panels[1].getTitle()).toEqual('Season 2');
-    expect(await panels[1].getDescription()).toContain('8.7 / 10');
-    expect(await panels[1].getDescription()).not.toContain('null');
+    expect(firstTitle).toEqual('Season 1');
+    expect(firstDescription).toContain('10 episodes');
+    expect(firstDescription).toContain('8.3 / 10');
+    expect(firstDescription).toContain('2011-04-17');
+    expect(secondTitle).toEqual('Season 2');
+    expect(secondDescription).toContain('8.7 / 10');
+    expect(secondDescription).not.toContain('null');
   });
 
   it('should not render the seasons section when seasons is empty', async () => {
@@ -170,7 +174,9 @@ describe('SeriesDetail', () => {
     createComponent('1399');
 
     const loader = TestbedHarnessEnvironment.loader(fixture);
-    expect(await loader.getHarnessOrNull(MatAccordionHarness)).toBeNull();
+    const accordion = await loader.getHarnessOrNull(MatAccordionHarness);
+
+    expect(accordion).toBeNull();
   });
 
   it('should pass seriesId and seasonNumber to SeasonDetail when a panel is expanded', async () => {
