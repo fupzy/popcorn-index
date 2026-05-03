@@ -40,5 +40,28 @@
         }
       </div>
     </article>
+    @if (series.seasons.length > 0) {
+      <section class="mt-6 flex flex-col gap-2">
+        <h2 class="text-lg font-semibold">Seasons</h2>
+        <mat-accordion>
+          @for (season of series.seasons; track season.id) {
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ season.name }}</mat-panel-title>
+                <mat-panel-description>
+                  {{ season.episode_count }} episodes · {{ season.vote_average }} / 10
+                  @if (season.air_date) {
+                    · {{ season.air_date }}
+                  }
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <ng-template matExpansionPanelContent>
+                <app-season-detail [seriesId]="series.id" [seasonNumber]="season.season_number" />
+              </ng-template>
+            </mat-expansion-panel>
+          }
+        </mat-accordion>
+      </section>
+    }
   }
 </app-loading-shell>

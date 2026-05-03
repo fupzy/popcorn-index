@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { getPosterUrl, PosterWidth } from '@shared';
-
-import { LoadingShell } from '../../shared/loading-shell/loading-shell';
+import { getPosterUrl, LoadingShell, PosterWidth } from '@shared';
 
 import { TmdbMedia } from '../search.service';
 
