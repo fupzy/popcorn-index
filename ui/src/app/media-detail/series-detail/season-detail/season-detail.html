@@ -1,0 +1,31 @@
+<app-loading-shell [isLoading]="isLoading()" [errorMessage]="errorMessage()">
+  @if (seasonDetails(); as season) {
+    <div class="flex flex-col gap-3">
+      @if (season.overview) {
+        <p class="leading-relaxed text-sm">{{ season.overview }}</p>
+      }
+      @if (season.episodes.length > 0) {
+        <ol class="flex flex-col gap-3">
+          @for (episode of season.episodes; track episode.id) {
+            <li class="border-l-2 border-gray-300 pl-3">
+              <div class="flex flex-wrap items-baseline gap-2">
+                <span class="font-semibold">{{ episode.episode_number }}. {{ episode.name }}</span>
+                @if (episode.air_date) {
+                  <span class="text-xs opacity-70">{{ episode.air_date }}</span>
+                }
+                @if (episode.runtime !== null) {
+                  <span class="text-xs opacity-70">· {{ episode.runtime }} min</span>
+                }
+              </div>
+              @if (episode.overview) {
+                <p class="text-sm opacity-80 mt-1">{{ episode.overview }}</p>
+              }
+            </li>
+          }
+        </ol>
+      } @else {
+        <p class="text-sm opacity-60">No episodes available.</p>
+      }
+    </div>
+  }
+</app-loading-shell>

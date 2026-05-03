@@ -19,6 +19,17 @@ export interface TmdbMovieDetails {
   readonly genres: TmdbGenre[];
 }
 
+export interface TmdbSeason {
+  readonly id: number;
+  readonly season_number: number;
+  readonly name: string;
+  readonly overview: string;
+  readonly poster_path: string | null;
+  readonly air_date: string | null;
+  readonly episode_count: number;
+  readonly vote_average: number;
+}
+
 export interface TmdbSeriesDetails {
   readonly id: number;
   readonly name: string;
@@ -29,6 +40,28 @@ export interface TmdbSeriesDetails {
   readonly number_of_seasons: number;
   readonly tagline: string;
   readonly genres: TmdbGenre[];
+  readonly seasons: TmdbSeason[];
+}
+
+export interface TmdbEpisode {
+  readonly id: number;
+  readonly episode_number: number;
+  readonly name: string;
+  readonly overview: string;
+  readonly still_path: string | null;
+  readonly air_date: string;
+  readonly runtime: number | null;
+  readonly vote_average: number;
+}
+
+export interface TmdbSeasonDetails {
+  readonly id: number;
+  readonly season_number: number;
+  readonly name: string;
+  readonly overview: string;
+  readonly poster_path: string | null;
+  readonly air_date: string | null;
+  readonly episodes: TmdbEpisode[];
 }
 
 /**
@@ -47,5 +80,9 @@ export class MediaDetailService {
 
   public getSeriesDetails(id: string): Observable<TmdbSeriesDetails> {
     return this.httpClient.get<TmdbSeriesDetails>(`${this.baseUrl}/tv/${id}`);
+  }
+
+  public getSeasonDetails(seriesId: number, seasonNumber: number): Observable<TmdbSeasonDetails> {
+    return this.httpClient.get<TmdbSeasonDetails>(`${this.baseUrl}/tv/${seriesId}/season/${seasonNumber}`);
   }
 }

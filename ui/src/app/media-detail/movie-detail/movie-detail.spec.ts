@@ -3,7 +3,7 @@ import { By } from '@angular/platform-browser';
 import { Observable, of, throwError } from 'rxjs';
 import { Mock } from 'vitest';
 
-import { LoadingShell } from '../../shared/loading-shell/loading-shell';
+import { LoadingShell } from '@shared';
 
 import { MediaDetailService, TmdbMovieDetails } from '../media-detail.service';
 

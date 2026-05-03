@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
 
-import { getPosterUrl, PosterWidth } from '@shared';
-
-import { LoadingShell } from '../../shared/loading-shell/loading-shell';
+import { getPosterUrl, LoadingShell, PosterWidth } from '@shared';
 
 import { MediaDetailService, TmdbMovieDetails } from '../media-detail.service';
 

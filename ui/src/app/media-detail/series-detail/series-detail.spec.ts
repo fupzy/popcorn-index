@@ -1,15 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { MatAccordionHarness, MatExpansionPanelHarness } from '@angular/material/expansion/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { Mock } from 'vitest';
 
-import { LoadingShell } from '../../shared/loading-shell/loading-shell';
+import { LoadingShell } from '@shared';
 
-import { MediaDetailService, TmdbSeriesDetails } from '../media-detail.service';
+import { MediaDetailService, TmdbSeasonDetails, TmdbSeriesDetails } from '../media-detail.service';
 
+import { SeasonDetail } from './season-detail/season-detail';
 import { SeriesDetail } from './series-detail';
 
 type GetSeriesDetailsFn = (id: string) => Observable<TmdbSeriesDetails>;
+type GetSeasonDetailsFn = (seriesId: number, seasonNumber: number) => Observable<TmdbSeasonDetails>;
+
+const seasonDetails: TmdbSeasonDetails = {
+  id: 3624,
+  season_number: 1,
+  name: 'Season 1',
+  overview: '',
+  poster_path: '/got-s1.jpg',
+  air_date: '2011-04-17',
+  episodes: []
+};
 
 const seriesDetails: TmdbSeriesDetails = {
   id: 1399,
@@ -23,22 +37,52 @@ const seriesDetails: TmdbSeriesDetails = {
   genres: [
     { id: 18, name: 'Drama' },
     { id: 10765, name: 'Sci-Fi & Fantasy' }
+  ],
+  seasons: [
+    {
+      id: 3624,
+      season_number: 1,
+      name: 'Season 1',
+      overview: '',
+      poster_path: '/got-s1.jpg',
+      air_date: '2011-04-17',
+      episode_count: 10,
+      vote_average: 8.3
+    },
+    {
+      id: 3625,
+      season_number: 2,
+      name: 'Season 2',
+      overview: '',
+      poster_path: '/got-s2.jpg',
+      air_date: null,
+      episode_count: 10,
+      vote_average: 8.7
+    }
   ]
 };
 
 describe('SeriesDetail', () => {
   let fixture: ComponentFixture<SeriesDetail>;
   let getSeriesDetailsSpy: Mock<GetSeriesDetailsFn>;
+  let getSeasonDetailsSpy: Mock<GetSeasonDetailsFn>;
 
   beforeEach(() => {
     getSeriesDetailsSpy = vi.fn<GetSeriesDetailsFn>();
     getSeriesDetailsSpy.mockReturnValue(of(seriesDetails));
+    getSeasonDetailsSpy = vi.fn<GetSeasonDetailsFn>();
+    getSeasonDetailsSpy.mockReturnValue(of(seasonDetails));
   });
 
   const createComponent = (id: string) => {
     TestBed.configureTestingModule({
       imports: [SeriesDetail],
-      providers: [{ provide: MediaDetailService, useValue: { getSeriesDetails: getSeriesDetailsSpy } }],
+      providers: [
+        {
+          provide: MediaDetailService,
+          useValue: { getSeriesDetails: getSeriesDetailsSpy, getSeasonDetails: getSeasonDetailsSpy }
+        }
+      ],
       teardown: { destroyAfterEach: true }
     });
 
@@ -102,6 +146,43 @@ describe('SeriesDetail', () => {
 
       expect(fixture.debugElement.nativeElement.textContent).not.toContain(missing);
     });
+  });
+
+  it('should render one mat-expansion-panel per season with name, episode count, rating and air date', async () => {
+    createComponent('1399');
+
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    const panels = await loader.getAllHarnesses(MatExpansionPanelHarness);
+
+    expect(panels).toHaveLength(2);
+    expect(await panels[0].getTitle()).toEqual('Season 1');
+    expect(await panels[0].getDescription()).toContain('10 episodes');
+    expect(await panels[0].getDescription()).toContain('8.3 / 10');
+    expect(await panels[0].getDescription()).toContain('2011-04-17');
+    expect(await panels[1].getTitle()).toEqual('Season 2');
+    expect(await panels[1].getDescription()).toContain('8.7 / 10');
+    expect(await panels[1].getDescription()).not.toContain('null');
+  });
+
+  it('should not render the seasons section when seasons is empty', async () => {
+    getSeriesDetailsSpy.mockReturnValue(of({ ...seriesDetails, seasons: [] }));
+
+    createComponent('1399');
+
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    expect(await loader.getHarnessOrNull(MatAccordionHarness)).toBeNull();
+  });
+
+  it('should pass seriesId and seasonNumber to SeasonDetail when a panel is expanded', async () => {
+    createComponent('1399');
+
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    const panels = await loader.getAllHarnesses(MatExpansionPanelHarness);
+    await panels[0].expand();
+
+    const seasonDetail = fixture.debugElement.query(By.directive(SeasonDetail)).componentInstance as SeasonDetail;
+    expect(seasonDetail.seriesId()).toEqual(1399);
+    expect(seasonDetail.seasonNumber()).toEqual(1);
   });
 
   it('should forward an error message to LoadingShell when the request fails', () => {

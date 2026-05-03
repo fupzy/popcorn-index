@@ -1,14 +1,31 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import {
+  MatAccordion,
+  MatExpansionPanel,
+  MatExpansionPanelContent,
+  MatExpansionPanelDescription,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle
+} from '@angular/material/expansion';
 
-import { getPosterUrl, PosterWidth } from '@shared';
-
-import { LoadingShell } from '../../shared/loading-shell/loading-shell';
+import { getPosterUrl, LoadingShell, PosterWidth } from '@shared';
 
 import { MediaDetailService, TmdbSeriesDetails } from '../media-detail.service';
 
+import { SeasonDetail } from './season-detail/season-detail';
+
 @Component({
   selector: 'app-series-detail',
-  imports: [LoadingShell],
+  imports: [
+    LoadingShell,
+    SeasonDetail,
+    MatAccordion,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatExpansionPanelDescription,
+    MatExpansionPanelContent
+  ],
   templateUrl: './series-detail.html',
   host: {
     class: 'flex flex-col flex-1 h-full w-full min-h-0 overflow-y-auto p-4'
