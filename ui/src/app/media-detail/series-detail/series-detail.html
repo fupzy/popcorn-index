@@ -19,7 +19,7 @@
             <dt class="font-medium opacity-70">First aired</dt>
             <dd>{{ series.first_air_date }}</dd>
           }
-          <dt class="font-medium opacity-70">Rating</dt>
+          <dt class="font-medium opacity-70">TMDB rating</dt>
           <dd>{{ series.vote_average }} / 10</dd>
           <dt class="font-medium opacity-70">Seasons</dt>
           <dd>{{ series.number_of_seasons }}</dd>
@@ -49,7 +49,7 @@
               <mat-expansion-panel-header>
                 <mat-panel-title>{{ season.name }}</mat-panel-title>
                 <mat-panel-description>
-                  {{ season.episode_count }} episodes · {{ season.vote_average }} / 10
+                  {{ season.episode_count }} episodes · TMDB {{ season.vote_average }} / 10
                   @if (season.air_date) {
                     · {{ season.air_date }}
                   }
