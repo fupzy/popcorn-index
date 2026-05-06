@@ -5,8 +5,9 @@ import { Mock } from 'vitest';
 
 import { provideRoutingTesting } from '@testing';
 
-import { SearchRequest } from '../search-bar/search-bar';
+import { SearchBar, SearchRequest } from '../search-bar/search-bar';
 import { SearchResult } from '../search-result/search-result';
+import { SearchStateService } from '../search-state.service';
 import { MediaTypeFilter, SearchService, TmdbMedia, TmdbSearchResponse } from '../search.service';
 
 import { Search } from './search';
@@ -108,5 +109,32 @@ describe('Search', () => {
     expect(searchSpy).toHaveBeenCalledExactlyOnceWith('matrix', 'fr', 'all');
 
     inFlight.complete();
+  });
+
+  it('should restore the previous search request as initial values on the SearchBar after re-mount', () => {
+    searchSpy.mockReturnValue(of(response));
+
+    triggerSearch(matrixSearch);
+
+    fixture.destroy();
+
+    const remountedFixture = TestBed.createComponent(Search);
+    remountedFixture.detectChanges();
+
+    const searchBar = remountedFixture.debugElement.query(By.directive(SearchBar)).componentInstance as SearchBar;
+    expect(searchBar.initialQuery()).toEqual('matrix');
+    expect(searchBar.initialLanguage()).toEqual('fr');
+    expect(searchBar.initialMediaType()).toEqual('all');
+  });
+
+  it('should retain the previous results in the SearchStateService after the component is destroyed', () => {
+    searchSpy.mockReturnValue(of(response));
+
+    triggerSearch(matrixSearch);
+
+    fixture.destroy();
+
+    const state = TestBed.inject(SearchStateService);
+    expect(state.results()).toEqual(response.results);
   });
 });

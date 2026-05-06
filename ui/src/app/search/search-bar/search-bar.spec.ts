@@ -4,7 +4,7 @@ import { Mock } from 'vitest';
 
 import { MaterialTesting } from '@testing';
 
-import { SearchService, TmdbLanguage } from '../search.service';
+import { MediaTypeFilter, SearchService, TmdbLanguage } from '../search.service';
 
 import { SearchBar, SearchRequest } from './search-bar';
 
@@ -16,6 +16,12 @@ const noEnglishName: TmdbLanguage = { iso_639_1: 'xx', english_name: '', name: '
 
 const mockLanguages: TmdbLanguage[] = [english, french, noEnglishName];
 
+interface InitialSearchValues {
+  query?: string;
+  language?: string;
+  mediaType?: MediaTypeFilter;
+}
+
 describe('SearchBar', () => {
   let component: SearchBar;
   let fixture: ComponentFixture<SearchBar>;
@@ -25,7 +31,9 @@ describe('SearchBar', () => {
   beforeEach(() => {
     getLanguagesSpy = vi.fn<GetLanguagesFn>();
     getLanguagesSpy.mockReturnValue(of(mockLanguages));
+  });
 
+  const createComponent = (initial: InitialSearchValues = {}) => {
     TestBed.configureTestingModule({
       imports: [SearchBar],
       providers: [{ provide: SearchService, useValue: { getLanguages: getLanguagesSpy } }],
@@ -34,16 +42,30 @@ describe('SearchBar', () => {
 
     fixture = TestBed.createComponent(SearchBar);
     component = fixture.componentInstance;
-    materialTesting = new MaterialTesting(fixture);
 
+    if (initial.query !== undefined) {
+      fixture.componentRef.setInput('initialQuery', initial.query);
+    }
+    if (initial.language !== undefined) {
+      fixture.componentRef.setInput('initialLanguage', initial.language);
+    }
+    if (initial.mediaType !== undefined) {
+      fixture.componentRef.setInput('initialMediaType', initial.mediaType);
+    }
+
+    materialTesting = new MaterialTesting(fixture);
     fixture.detectChanges();
-  });
+  };
 
   it('should create', () => {
+    createComponent();
+
     expect(component).toBeTruthy();
   });
 
   it('should render a labeled search input and a submit icon button', async () => {
+    createComponent();
+
     const inputExists = await materialTesting.matFormField.exists('Search movies & series');
     const buttonExists = await materialTesting.matIconButton.exists('mat-icon');
 
@@ -52,6 +74,8 @@ describe('SearchBar', () => {
   });
 
   it('should render a language selector defaulting to French', async () => {
+    createComponent();
+
     const exists = await materialTesting.matFormField.exists('Language');
     const value = await materialTesting.matFormField.getMatSelectValue('Language');
 
@@ -60,6 +84,8 @@ describe('SearchBar', () => {
   });
 
   it('should populate the language selector with options from SearchService.getLanguages, sorted alphabetically and excluding entries without an English name', async () => {
+    createComponent();
+
     const options = await materialTesting.matFormField.getMatSelectOptions('Language');
 
     expect(getLanguagesSpy).toHaveBeenCalledOnce();
@@ -67,6 +93,8 @@ describe('SearchBar', () => {
   });
 
   it('should render a media-type selector defaulting to All with options All, Movies, Series', async () => {
+    createComponent();
+
     const exists = await materialTesting.matFormField.exists('Type');
     const value = await materialTesting.matFormField.getMatSelectValue('Type');
     const options = await materialTesting.matFormField.getMatSelectOptions('Type');
@@ -77,6 +105,8 @@ describe('SearchBar', () => {
   });
 
   it('should update the search input label according to the selected media type', async () => {
+    createComponent();
+
     expect(await materialTesting.matFormField.exists('Search movies & series')).toEqual(true);
 
     await materialTesting.matFormField.setMatSelectValue('Type', 'Movies');
@@ -90,6 +120,8 @@ describe('SearchBar', () => {
   });
 
   it('should not emit searchRequested when the submit button is clicked while the form is empty', async () => {
+    createComponent();
+
     const emitSpy = vi.spyOn(component.searchRequested, 'emit');
 
     await materialTesting.matIconButton.click('mat-icon');
@@ -98,6 +130,8 @@ describe('SearchBar', () => {
   });
 
   it('should emit the trimmed query, default French language, and default All media type when the submit button is clicked', async () => {
+    createComponent();
+
     const emitSpy = vi.spyOn(component.searchRequested, 'emit');
 
     await materialTesting.matFormField.setMatInputValue('Search movies & series', '  matrix  ');
@@ -108,6 +142,8 @@ describe('SearchBar', () => {
   });
 
   it('should emit the language selected by the user', async () => {
+    createComponent();
+
     const emitSpy = vi.spyOn(component.searchRequested, 'emit');
 
     await materialTesting.matFormField.setMatInputValue('Search movies & series', 'matrix');
@@ -119,6 +155,8 @@ describe('SearchBar', () => {
   });
 
   it('should emit the media type selected by the user', async () => {
+    createComponent();
+
     const emitSpy = vi.spyOn(component.searchRequested, 'emit');
 
     await materialTesting.matFormField.setMatInputValue('Search movies & series', 'thrones');
@@ -127,5 +165,17 @@ describe('SearchBar', () => {
 
     const expected: SearchRequest = { query: 'thrones', language: 'fr', mediaType: 'tv' };
     expect(emitSpy).toHaveBeenCalledExactlyOnceWith(expected);
+  });
+
+  it('should pre-fill the form with the initialQuery, initialLanguage and initialMediaType inputs', async () => {
+    createComponent({ query: 'matrix', language: 'en', mediaType: 'movie' });
+
+    const queryValue = await materialTesting.matFormField.getMatInputValue('Search a movie');
+    const languageValue = await materialTesting.matFormField.getMatSelectValue('Language');
+    const typeValue = await materialTesting.matFormField.getMatSelectValue('Type');
+
+    expect(queryValue).toEqual('matrix');
+    expect(languageValue).toEqual('English');
+    expect(typeValue).toEqual('Movies');
   });
 });

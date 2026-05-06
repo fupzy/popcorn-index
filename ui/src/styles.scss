@@ -23,3 +23,8 @@ mat-card-header.header {
 .header .mat-mdc-card-header-text {
   width: 100%;
 }
+
+app-back-button button[mat-icon-button] {
+  --mat-icon-button-icon-color: var(--mat-sys-primary);
+  --mat-icon-button-state-layer-color: var(--mat-sys-primary);
+}

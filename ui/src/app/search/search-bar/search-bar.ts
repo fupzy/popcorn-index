@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -47,7 +47,11 @@ const sortLanguages = (list: TmdbLanguage[]): TmdbLanguage[] =>
   templateUrl: './search-bar.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchBar {
+export class SearchBar implements OnInit {
+  public readonly initialQuery = input<string>('');
+  public readonly initialLanguage = input<string>(DEFAULT_LANGUAGE);
+  public readonly initialMediaType = input<MediaTypeFilter>(DEFAULT_MEDIA_TYPE);
+
   public readonly searchRequested = output<SearchRequest>();
 
   protected readonly form;
@@ -68,6 +72,14 @@ export class SearchBar {
     this.languages = toSignal(this.searchService.getLanguages().pipe(map(sortLanguages)), { initialValue: EMPTY_LANGUAGES });
     const mediaType = toSignal(this.form.controls.mediaType.valueChanges, { initialValue: this.form.controls.mediaType.value });
     this.searchLabel = computed(() => SEARCH_LABEL_BY_MEDIA_TYPE[mediaType()]);
+  }
+
+  public ngOnInit(): void {
+    this.form.setValue({
+      query: this.initialQuery(),
+      language: this.initialLanguage(),
+      mediaType: this.initialMediaType()
+    });
   }
 
   protected onSubmit(): void {

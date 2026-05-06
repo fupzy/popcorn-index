@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
 
-import { getPosterUrl, LoadingShell, PosterWidth } from '@shared';
+import { BackButton, getPosterUrl, LoadingShell, PosterWidth } from '@shared';
 
 import { MediaDetailService, TmdbMovieDetails } from '../media-detail.service';
 
 @Component({
   selector: 'app-movie-detail',
-  imports: [LoadingShell],
+  imports: [BackButton, LoadingShell],
   templateUrl: './movie-detail.html',
   host: {
     class: 'flex flex-col flex-1 h-full w-full min-h-0 overflow-y-auto p-4'
