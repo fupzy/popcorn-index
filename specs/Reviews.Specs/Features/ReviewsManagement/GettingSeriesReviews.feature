@@ -32,3 +32,12 @@ Scenario: 1. Returning a series review with its per-season notes
             }
         ]
         """
+
+Scenario: 2. Returning empty array when no review exists for the series
+    When I get the reviews of series 12345
+    Then I receive a "OK" status
+    And I receive the response
+        """
+        []
+        """
+
