@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      This reference is mandatory so that the project's controllers are taken into account as dependencies
+      when scanning assemblies to find classes that implement ControllerBase.
+      Without it, tests may fail with 404 NotFound because the assembly containing the controllers
+      has not been added with AddApplicationParts.
+     -->
+    <ProjectReference Include="..\..\src\Reviews\Reviews.csproj" />
+  </ItemGroup>
+
+</Project>

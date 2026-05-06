@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Reviews.Infrastructure;
 using Users.Infrastructure;
 using Utilities.Extensions;
 
@@ -11,5 +12,6 @@ public class MigrationDbContext(DbContextOptions<MigrationDbContext> options, IC
     {
         modelBuilder.HasDefaultSchema(configuration.GetPostgreSqlSchema());
         UsersDbContext.CreateNewTables(modelBuilder);
+        ReviewsDbContext.CreateNewTables(modelBuilder);
     }
 }
