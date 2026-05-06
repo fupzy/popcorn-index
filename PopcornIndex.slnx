@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Specs/">
     <Project Path="specs/Authentication.Specs/Authentication.Specs.csproj" Id="4e15b2a0-78df-4e93-8de0-69bde4fd41ec" />
+    <Project Path="specs/Reviews.Specs/Reviews.Specs.csproj" Id="ccdb4c2c-2a99-4af3-9885-e6b6ff7b5051" />
     <Project Path="specs/TMDB.Specs/TMDB.Specs.csproj" Id="efc9a261-6075-4a85-a3d1-60cec4d2020d" />
     <Project Path="specs/Users.Specs/Users.Specs.csproj" Id="7d73ffbf-6f57-4872-96f5-43a1368720d1" />
   </Folder>
@@ -46,6 +47,7 @@
   </Folder>
   <Project Path="src/Authentication/Authentication.csproj" Id="023a14a2-72e2-4c6e-92a7-c5a32f13d26a" />
   <Project Path="src/PopcornIndex/PopcornIndex.csproj" />
+  <Project Path="src/Reviews/Reviews.csproj" Id="62fbc36e-7faf-4bc9-ac1d-4055ef86da3b" />
   <Project Path="src/TMDB/TMDB.csproj" Id="94ee6fcc-de67-4e27-af3d-a808beb5347f" />
   <Project Path="src/Users/Users.csproj" Id="99f804ff-7f9c-421e-a556-bc6dc8085caa" />
   <Project Path="src/Utilities/Utilities.csproj" />
