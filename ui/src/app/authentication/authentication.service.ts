@@ -103,11 +103,13 @@ export class AuthenticationService {
     });
     this.currentUserId = computed(() => {
       const current = this.tokenSignal();
+
       if (current === null) {
         return null;
       }
 
       const payload = decodeJwtPayload(current);
+
       return payload?.sub ?? null;
     });
 
