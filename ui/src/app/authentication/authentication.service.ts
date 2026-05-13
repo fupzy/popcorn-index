@@ -25,6 +25,7 @@ export const AUTH_TOKEN_STORAGE_KEY = 'popcorn-index:auth-token';
  */
 interface JwtPayload {
   readonly exp?: number;
+  readonly sub?: string;
 }
 
 /**
@@ -72,6 +73,13 @@ export class AuthenticationService {
    */
   public readonly tokenExpiresAt: Signal<Date | null>;
 
+  /**
+   * Reactive view of the current user's id, decoded from the JWT
+   * `nameidentifier` claim. `null` when no token is stored or the
+   * claim is missing.
+   */
+  public readonly currentUserId: Signal<string | null>;
+
   private readonly baseUrl = '/popcorn-index/api/v1/authentication';
 
   private readonly httpClient = inject(HttpClient);
@@ -92,6 +100,15 @@ export class AuthenticationService {
 
       const payload = decodeJwtPayload(current);
       return payload?.exp != null ? new Date(payload.exp * 1000) : null;
+    });
+    this.currentUserId = computed(() => {
+      const current = this.tokenSignal();
+      if (current === null) {
+        return null;
+      }
+
+      const payload = decodeJwtPayload(current);
+      return payload?.sub ?? null;
     });
 
     const stored = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);

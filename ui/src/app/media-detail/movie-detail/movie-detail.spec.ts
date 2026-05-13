@@ -5,6 +5,7 @@ import { Mock } from 'vitest';
 
 import { LoadingShell } from '@shared';
 
+import { ReviewsSection, ReviewsService } from '../../reviews';
 import { MediaDetailService, TmdbMovieDetails } from '../media-detail.service';
 
 import { MovieDetail } from './movie-detail';
@@ -38,7 +39,10 @@ describe('MovieDetail', () => {
   const createComponent = (id: string) => {
     TestBed.configureTestingModule({
       imports: [MovieDetail],
-      providers: [{ provide: MediaDetailService, useValue: { getMovieDetails: getMovieDetailsSpy } }],
+      providers: [
+        { provide: MediaDetailService, useValue: { getMovieDetails: getMovieDetailsSpy } },
+        { provide: ReviewsService, useValue: { getMovieReviews: () => of([]) } }
+      ],
       teardown: { destroyAfterEach: true }
     });
 
@@ -102,6 +106,14 @@ describe('MovieDetail', () => {
 
       expect(fixture.debugElement.nativeElement.textContent).not.toContain(missing);
     });
+  });
+
+  it('should render app-reviews-section with the movie media type and tmdb id', () => {
+    createComponent('603');
+
+    const reviewsSection = fixture.debugElement.query(By.directive(ReviewsSection)).componentInstance as ReviewsSection;
+    expect(reviewsSection.mediaType()).toEqual('Movie');
+    expect(reviewsSection.tmdbId()).toEqual(603);
   });
 
   it('should forward an error message to LoadingShell when the request fails', () => {

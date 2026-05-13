@@ -10,7 +10,9 @@ import {
 
 import { BackButton, getPosterUrl, LoadingShell, PosterWidth } from '@shared';
 
-import { MediaDetailService, TmdbSeriesDetails } from '../media-detail.service';
+import { ReviewSeason, ReviewsSection } from '../../reviews';
+
+import { MediaDetailService, TmdbSeason, TmdbSeriesDetails } from '../media-detail.service';
 
 import { SeasonDetail } from './season-detail/season-detail';
 
@@ -19,6 +21,7 @@ import { SeasonDetail } from './season-detail/season-detail';
   imports: [
     BackButton,
     LoadingShell,
+    ReviewsSection,
     SeasonDetail,
     MatAccordion,
     MatExpansionPanel,
@@ -51,6 +54,10 @@ export class SeriesDetail implements OnInit {
     const id = this.id();
 
     this.loadSeries(id);
+  }
+
+  protected toReviewSeasons(seasons: TmdbSeason[]): ReviewSeason[] {
+    return seasons.filter((season) => season.season_number >= 1).map((season) => ({ seasonNumber: season.season_number, name: season.name }));
   }
 
   private loadSeries(id: string): void {

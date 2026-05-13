@@ -38,4 +38,11 @@ internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
 
         return userDao?.ToEntity();
     }
+
+    public async Task<User?> GetById(Guid id)
+    {
+        var userDao = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+
+        return userDao?.ToEntity();
+    }
 }

@@ -7,6 +7,7 @@ import { Mock } from 'vitest';
 
 import { LoadingShell } from '@shared';
 
+import { ReviewsSection, ReviewsService } from '../../reviews';
 import { MediaDetailService, TmdbSeasonDetails, TmdbSeriesDetails } from '../media-detail.service';
 
 import { SeasonDetail } from './season-detail/season-detail';
@@ -81,7 +82,8 @@ describe('SeriesDetail', () => {
         {
           provide: MediaDetailService,
           useValue: { getSeriesDetails: getSeriesDetailsSpy, getSeasonDetails: getSeasonDetailsSpy }
-        }
+        },
+        { provide: ReviewsService, useValue: { getSeriesReviews: () => of([]) } }
       ],
       teardown: { destroyAfterEach: true }
     });
@@ -189,6 +191,18 @@ describe('SeriesDetail', () => {
     const seasonDetail = fixture.debugElement.query(By.directive(SeasonDetail)).componentInstance as SeasonDetail;
     expect(seasonDetail.seriesId()).toEqual(1399);
     expect(seasonDetail.seasonNumber()).toEqual(1);
+  });
+
+  it('should render app-reviews-section with the series media type, tmdb id and season labels', () => {
+    createComponent('1399');
+
+    const reviewsSection = fixture.debugElement.query(By.directive(ReviewsSection)).componentInstance as ReviewsSection;
+    expect(reviewsSection.mediaType()).toEqual('Series');
+    expect(reviewsSection.tmdbId()).toEqual(1399);
+    expect(reviewsSection.seasons()).toEqual([
+      { seasonNumber: 1, name: 'Season 1' },
+      { seasonNumber: 2, name: 'Season 2' }
+    ]);
   });
 
   it('should forward an error message to LoadingShell when the request fails', () => {

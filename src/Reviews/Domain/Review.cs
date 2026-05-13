@@ -3,6 +3,7 @@ namespace Reviews.Domain;
 public sealed class Review(
     Guid id,
     Guid userId,
+    string username,
     MediaType mediaType,
     int tmdbId,
     short rating,
@@ -14,6 +15,8 @@ public sealed class Review(
     public Guid Id { get; } = id;
 
     public Guid UserId { get; } = userId;
+
+    public string Username { get; } = username;
 
     public MediaType MediaType { get; } = mediaType;
 
