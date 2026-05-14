@@ -11,9 +11,7 @@ import {
 import { BackButton, getPosterUrl, LoadingShell, PosterWidth } from '@shared';
 
 import { ReviewSeason, ReviewsSection } from '../../reviews';
-
 import { MediaDetailService, TmdbSeason, TmdbSeriesDetails } from '../media-detail.service';
-
 import { SeasonDetail } from './season-detail/season-detail';
 
 @Component({

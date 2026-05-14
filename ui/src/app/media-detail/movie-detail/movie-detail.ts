@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, si
 import { BackButton, getPosterUrl, LoadingShell, PosterWidth } from '@shared';
 
 import { ReviewsSection } from '../../reviews';
-
 import { MediaDetailService, TmdbMovieDetails } from '../media-detail.service';
 
 @Component({
