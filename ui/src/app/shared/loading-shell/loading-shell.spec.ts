@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/testing';
+import { MaterialTesting } from '@testing';
 
 import { LoadingShell } from './loading-shell';
 
@@ -24,7 +22,7 @@ class TestHost {
 describe('LoadingShell', () => {
   let fixture: ComponentFixture<TestHost>;
   let host: TestHost;
-  let loader: HarnessLoader;
+  let materialTesting: MaterialTesting<TestHost>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -34,7 +32,7 @@ describe('LoadingShell', () => {
 
     fixture = TestBed.createComponent(TestHost);
     host = fixture.componentInstance;
-    loader = TestbedHarnessEnvironment.loader(fixture);
+    materialTesting = new MaterialTesting(fixture);
 
     fixture.detectChanges();
   });
@@ -59,11 +57,11 @@ describe('LoadingShell', () => {
       host.errorMessage.set(errorMessage);
       fixture.detectChanges();
 
-      const spinner = await loader.getHarnessOrNull(MatProgressSpinnerHarness);
+      const spinnerExists = await materialTesting.matProgressSpinner.exists();
       const alert = fixture.debugElement.query(By.css('[role="alert"]'));
       const content = fixture.debugElement.query(By.css('.projected'));
 
-      expect(spinner !== null).toEqual(expectSpinner);
+      expect(spinnerExists).toEqual(expectSpinner);
       expect(alert !== null).toEqual(expectAlert);
       expect(content !== null).toEqual(expectContent);
     });
