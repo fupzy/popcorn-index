@@ -56,6 +56,17 @@ describe('ReviewCard', () => {
     expect(text).toContain('Loved it');
   });
 
+  it('should omit the username and the comment when they are not provided', () => {
+    const review: Review = { ...mockReview, username: '', comment: null };
+    fixture.componentRef.setInput('review', review);
+    fixture.detectChanges();
+
+    const text = fixture.debugElement.nativeElement.textContent;
+
+    expect(text).not.toContain('alice');
+    expect(text).not.toContain('Loved it');
+  });
+
   it('should not display "Your review" badge when isOwner is false', () => {
     fixture.componentRef.setInput('review', mockReview);
     fixture.componentRef.setInput('isOwner', false);
@@ -107,6 +118,18 @@ describe('ReviewCard', () => {
     fixture.detectChanges();
 
     expect(fixture.debugElement.nativeElement.textContent).toContain('Pilot Season');
+  });
+
+  it('should display the season comment when one is provided', () => {
+    const review: Review = {
+      ...mockReview,
+      mediaType: 'Series',
+      seasons: [{ seasonNumber: 1, rating: 4, comment: 'Great first season' }]
+    };
+    fixture.componentRef.setInput('review', review);
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.nativeElement.textContent).toContain('Great first season');
   });
 
   it('should fall back to "Season N" when no name is provided for the season', () => {

@@ -3,6 +3,7 @@ import { By } from '@angular/platform-browser';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { MatButtonToggleGroupHarness } from '@angular/material/button-toggle/testing';
+import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/testing';
 import { signal, WritableSignal } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable, of, Subject, throwError } from 'rxjs';
@@ -224,6 +225,29 @@ describe('ReviewsSection', () => {
     const cards = fixture.debugElement.queryAll(By.directive(ReviewCard));
     expect((cards[0].componentInstance as ReviewCard).review().id).toBe('rH');
     expect((cards[1].componentInstance as ReviewCard).review().id).toBe('rL');
+  });
+
+  it('should show a loading spinner while reviews are loading', async () => {
+    reviewsService.getMovieReviews.mockReturnValue(new Subject<Review[]>());
+
+    TestBed.configureTestingModule({
+      imports: [ReviewsSection],
+      providers: [
+        { provide: ReviewsService, useValue: reviewsService },
+        { provide: AuthenticationService, useValue: { currentUserId } },
+        { provide: MatDialog, useValue: dialog }
+      ],
+      teardown: { destroyAfterEach: true }
+    });
+    fixture = TestBed.createComponent(ReviewsSection);
+    loader = TestbedHarnessEnvironment.loader(fixture);
+    fixture.componentRef.setInput('mediaType', 'Movie');
+    fixture.componentRef.setInput('tmdbId', 42);
+    fixture.detectChanges();
+
+    const spinner = await loader.getHarnessOrNull(MatProgressSpinnerHarness);
+
+    expect(spinner).not.toBeNull();
   });
 
   it('should display an error message when loading reviews fails', () => {

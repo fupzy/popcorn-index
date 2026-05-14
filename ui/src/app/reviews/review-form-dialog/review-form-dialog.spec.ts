@@ -215,6 +215,15 @@ describe('ReviewFormDialog', () => {
     expect(reviewsService.createReview).not.toHaveBeenCalled();
   });
 
+  it('should show the rating validation error after an invalid submit', () => {
+    setup(createData);
+
+    fixture.debugElement.query(By.css('form')).triggerEventHandler('submit', new Event('submit'));
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.nativeElement.textContent).toContain('Please pick a rating between 1 and 5 stars.');
+  });
+
   it('should ignore a second submit while the first is still in flight', async () => {
     const inFlight = new Subject<Review>();
     reviewsService.createReview.mockReturnValue(inFlight);
