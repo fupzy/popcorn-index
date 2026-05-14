@@ -10,12 +10,19 @@ namespace Authentication.Application;
 
 public sealed class JwtService(IConfiguration configuration) : IJwtService
 {
+    static JwtService()
+    {
+        // Emit the JWT registered claim names ("sub", "name") verbatim instead of
+        // the legacy long XML URIs that JwtSecurityTokenHandler uses by default.
+        JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+    }
+
     public string GenerateToken(User user)
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username)
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Name, user.Username)
         };
 
         var jwtConfigurationKey = configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt Key setting is missing!");

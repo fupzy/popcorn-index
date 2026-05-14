@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>{{ isEditing() ? 'Edit your review' : 'Write a review' }}</h2>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <mat-dialog-content class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1">
+      <span class="text-sm font-medium">Your rating</span>
+      <app-rating-stars
+        [value]="form.controls.rating.value"
+        [interactive]="true"
+        ariaLabel="Your rating"
+        (valueChange)="setRating($event)" />
+    </div>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Comment (optional)</mat-label>
+      <textarea matInput formControlName="comment" rows="4" [maxlength]="maxCommentLength"></textarea>
+    </mat-form-field>
+
+    @if (seasonForms.length > 0) {
+      <section class="flex flex-col gap-3">
+        <h3 class="text-sm font-semibold">Rate the seasons (optional)</h3>
+        @for (entry of seasonForms; track entry.season.seasonNumber) {
+          <div class="flex flex-col gap-1 border border-gray-200 rounded-md p-3" [formGroup]="entry.form">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-sm font-medium">{{ entry.season.name }}</span>
+              <app-rating-stars
+                [value]="entry.form.controls.rating.value"
+                [interactive]="true"
+                ariaLabel="Rating for {{ entry.season.name }}"
+                (valueChange)="setSeasonRating(entry, $event)" />
+            </div>
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Comment (optional)</mat-label>
+              <textarea matInput formControlName="comment" rows="2" [maxlength]="maxCommentLength"></textarea>
+            </mat-form-field>
+          </div>
+        }
+      </section>
+    }
+
+    @if (errorMessage(); as message) {
+      <p class="text-sm text-red-600" role="alert">{{ message }}</p>
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()" [disabled]="isSubmitting()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || isSubmitting()">
+      {{ isEditing() ? 'Save' : 'Publish' }}
+    </button>
+  </mat-dialog-actions>
+</form>

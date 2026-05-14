@@ -1,0 +1,48 @@
+<section class="flex flex-col gap-4">
+  <header class="flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <h2 class="text-lg font-semibold leading-none m-0 text-(--mat-sys-primary)">Reviews</h2>
+      @if (averageRating(); as average) {
+        <div class="flex items-center gap-2">
+          <app-rating-stars [value]="average.rounded" ariaLabel="Average rating: {{ average.value }} out of 5" />
+          <span class="text-sm opacity-70">{{ average.value }} / 5 · {{ average.count }} review{{ average.count === 1 ? '' : 's' }}</span>
+        </div>
+      } @else {
+        <span class="text-sm opacity-70">No reviews yet.</span>
+      }
+    </div>
+
+    @if (currentUserId(); as userId) {
+      <button mat-flat-button color="primary" type="button" (click)="openForm(userId)">
+        <mat-icon>{{ ownReview() ? 'edit' : 'rate_review' }}</mat-icon>
+        <span>{{ ownReview() ? 'Edit my review' : 'Write a review' }}</span>
+      </button>
+    }
+  </header>
+
+  @if (isLoading()) {
+    <div class="flex justify-center py-6">
+      <mat-progress-spinner mode="indeterminate" diameter="32" />
+    </div>
+  } @else if (errorMessage(); as message) {
+    <p class="text-sm text-red-600" role="alert">{{ message }}</p>
+  } @else {
+    @if (ownReview(); as own) {
+      <app-review-card [review]="own" [isOwner]="true" [seasons]="seasons()" (editRequested)="openForm(own.userId)" />
+    }
+
+    @if (otherReviews().length > 0) {
+      <div class="flex items-center justify-end">
+        <mat-button-toggle-group [value]="sortOrder()" (change)="setSortOrder($event.value)" aria-label="Sort reviews">
+          <mat-button-toggle value="recent">Most recent</mat-button-toggle>
+          <mat-button-toggle value="top">Top rated</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <div class="flex flex-col gap-3">
+        @for (review of otherReviews(); track review.id) {
+          <app-review-card [review]="review" [seasons]="seasons()" />
+        }
+      </div>
+    }
+  }
+</section>

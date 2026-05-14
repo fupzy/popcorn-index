@@ -1,0 +1,17 @@
+<div class="contents" role="radiogroup" [attr.aria-label]="ariaLabel()">
+  @for (star of stars(); track star) {
+    @if (interactive()) {
+      <button
+        type="button"
+        role="radio"
+        class="bg-transparent border-0 p-0 cursor-pointer leading-none text-amber-500! hover:text-amber-600! focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-sm"
+        [attr.aria-label]="star + ' star' + (star === 1 ? '' : 's')"
+        [attr.aria-checked]="star === value()"
+        (click)="setValue(star)">
+        <mat-icon>{{ star <= value() ? 'star' : 'star_border' }}</mat-icon>
+      </button>
+    } @else {
+      <mat-icon class="text-amber-500!" aria-hidden="true">{{ star <= value() ? 'star' : 'star_border' }}</mat-icon>
+    }
+  }
+</div>

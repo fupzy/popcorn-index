@@ -64,5 +64,6 @@
         </mat-accordion>
       </section>
     }
+    <app-reviews-section mediaType="Series" [tmdbId]="series.id" [seasons]="toReviewSeasons(series.seasons)" />
   }
 </app-loading-shell>

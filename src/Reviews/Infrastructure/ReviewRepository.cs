@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Reviews.Domain;
+using Users.Domain;
 using Utilities.GuidProvider;
 
 namespace Reviews.Infrastructure;
 
-internal sealed class ReviewRepository(ReviewsDbContext dbContext, IGuidProvider guidProvider) : IReviewRepository
+internal sealed class ReviewRepository(ReviewsDbContext dbContext, IUserRepository userRepository, IGuidProvider guidProvider) : IReviewRepository
 {
     public IAsyncEnumerable<Review> GetMediaReviews(MediaType mediaType, int tmdbId)
     {
@@ -40,6 +41,9 @@ internal sealed class ReviewRepository(ReviewsDbContext dbContext, IGuidProvider
 
     public async Task<Review> Create(CreateReviewCommand command)
     {
+        var user = await userRepository.GetById(command.UserId)
+            ?? throw new InvalidOperationException($"User {command.UserId} not found");
+
         var id = guidProvider.NewGuid();
         var now = DateTimeOffset.UtcNow;
 
@@ -47,6 +51,7 @@ internal sealed class ReviewRepository(ReviewsDbContext dbContext, IGuidProvider
         {
             Id = id,
             UserId = command.UserId,
+            Username = user.Username,
             MediaType = command.MediaType,
             TmdbId = command.TmdbId,
             Rating = command.Rating,

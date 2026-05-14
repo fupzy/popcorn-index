@@ -1,0 +1,53 @@
+<mat-card class="border-l-4 border-(--mat-sys-primary) bg-(--mat-sys-primary-container)!">
+  <mat-card-content class="flex flex-col gap-3">
+    <div class="flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
+        <app-rating-stars [value]="review().rating" ariaLabel="Rating: {{ review().rating }} out of 5" />
+        @if (review().username; as username) {
+          <span class="text-sm font-semibold text-(--mat-sys-primary)">{{ username }}</span>
+        }
+        @if (isOwner()) {
+          <span class="text-xs uppercase tracking-wide font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">Your review</span>
+        }
+        <span class="text-xs opacity-70">{{ review().updatedAt | date: 'mediumDate' }}</span>
+      </div>
+      @if (isOwner()) {
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Review actions">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item type="button" (click)="requestEdit()">
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+        </mat-menu>
+      }
+    </div>
+
+    @if (review().comment; as comment) {
+      <p class="leading-relaxed whitespace-pre-line m-0">{{ comment }}</p>
+    }
+
+    @if (seasonRows().length > 0) {
+      <mat-expansion-panel class="mat-elevation-z0 border border-(--mat-sys-outline-variant) bg-(--mat-sys-secondary-container)!">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Season ratings</mat-panel-title>
+          <mat-panel-description>{{ seasonRows().length }} rated</mat-panel-description>
+        </mat-expansion-panel-header>
+        <ul class="flex flex-col gap-2 m-0 p-0 list-none">
+          @for (season of seasonRows(); track season.seasonNumber) {
+            <li class="flex flex-col gap-1">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-sm font-medium">{{ season.name }}</span>
+                <app-rating-stars [value]="season.rating" ariaLabel="{{ season.name }} rating: {{ season.rating }} out of 5" />
+              </div>
+              @if (season.comment; as seasonComment) {
+                <p class="text-sm opacity-80 whitespace-pre-line m-0">{{ seasonComment }}</p>
+              }
+            </li>
+          }
+        </ul>
+      </mat-expansion-panel>
+    }
+  </mat-card-content>
+</mat-card>

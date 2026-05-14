@@ -11,6 +11,8 @@ internal sealed class ReviewDao
 
     public Guid UserId { get; set; }
 
+    public required string Username { get; set; }
+
     public MediaType MediaType { get; set; }
 
     public int TmdbId { get; set; }
@@ -61,6 +63,7 @@ internal sealed class ReviewDao
         return new Review(
             this.Id,
             this.UserId,
+            this.Username,
             this.MediaType,
             this.TmdbId,
             this.Rating,
