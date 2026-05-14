@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -30,9 +30,18 @@ interface SeasonFormEntry {
 interface ReviewFormGroup {
   rating: FormControl<number>;
   comment: FormControl<string>;
+  seasons: FormArray<FormGroup<SeasonFormGroup>>;
 }
 
 const MAX_COMMENT_LENGTH = 5000;
+
+const commentRequiresRating = (control: AbstractControl): ValidationErrors | null => {
+  const group = control as FormGroup<SeasonFormGroup>;
+  const rating = group.controls.rating.value;
+  const comment = group.controls.comment.value.trim();
+
+  return comment.length > 0 && rating === 0 ? { ratingRequired: true } : null;
+};
 
 @Component({
   selector: 'app-review-form-dialog',
@@ -58,21 +67,25 @@ export class ReviewFormDialog {
   constructor() {
     const existing = this.data.existingReview;
 
-    this.form = this.formBuilder.group<ReviewFormGroup>({
-      rating: this.formBuilder.control(existing?.rating ?? 0, [Validators.required, Validators.min(1), Validators.max(MAX_RATING_STARS)]),
-      comment: this.formBuilder.control(existing?.comment ?? '', [Validators.maxLength(MAX_COMMENT_LENGTH)])
-    });
-
     this.seasonForms = this.data.seasons.map((season) => {
       const existingSeason = existing?.seasons?.find((s) => s.seasonNumber === season.seasonNumber);
 
       return {
         season,
-        form: this.formBuilder.group<SeasonFormGroup>({
-          rating: this.formBuilder.control(existingSeason?.rating ?? 0, [Validators.min(0), Validators.max(MAX_RATING_STARS)]),
-          comment: this.formBuilder.control(existingSeason?.comment ?? '', [Validators.maxLength(MAX_COMMENT_LENGTH)])
-        })
+        form: this.formBuilder.group<SeasonFormGroup>(
+          {
+            rating: this.formBuilder.control(existingSeason?.rating ?? 0, [Validators.min(0), Validators.max(MAX_RATING_STARS)]),
+            comment: this.formBuilder.control(existingSeason?.comment ?? '', [Validators.maxLength(MAX_COMMENT_LENGTH)])
+          },
+          { validators: commentRequiresRating }
+        )
       };
+    });
+
+    this.form = this.formBuilder.group<ReviewFormGroup>({
+      rating: this.formBuilder.control(existing?.rating ?? 0, [Validators.required, Validators.min(1), Validators.max(MAX_RATING_STARS)]),
+      comment: this.formBuilder.control(existing?.comment ?? '', [Validators.maxLength(MAX_COMMENT_LENGTH)]),
+      seasons: this.formBuilder.array(this.seasonForms.map((entry) => entry.form))
     });
   }
 
@@ -88,8 +101,6 @@ export class ReviewFormDialog {
 
   protected submit(): void {
     if (this.form.invalid || this.isSubmitting()) {
-      this.form.markAllAsTouched();
-
       return;
     }
 

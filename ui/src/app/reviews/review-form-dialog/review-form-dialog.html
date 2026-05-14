@@ -8,9 +8,6 @@
         [interactive]="true"
         ariaLabel="Your rating"
         (valueChange)="setRating($event)" />
-      @if (form.controls.rating.touched && form.controls.rating.invalid) {
-        <span class="text-xs text-red-600">Please pick a rating between 1 and 5 stars.</span>
-      }
     </div>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Comment (optional)</mat-label>

@@ -207,21 +207,25 @@ describe('ReviewFormDialog', () => {
     expect(reviewsService.createReview.mock.calls[0][0].seasons).toBeNull();
   });
 
+  it('should disable submit when a season has a comment but no rating', async () => {
+    setup({ ...createData, mediaType: 'Series', seasons: editData.seasons });
+    clickStar(fixture.debugElement.query(By.directive(RatingStars)), 5);
+    const seasonInputs = fixture.debugElement.queryAll(By.css('textarea[formControlName="comment"]'));
+    seasonInputs[1].nativeElement.value = 'Loved this season';
+    seasonInputs[1].nativeElement.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    const isDisabled = await materialTesting.matButton.isDisabled(/Publish/);
+
+    expect(isDisabled).toBe(true);
+  });
+
   it('should ignore submit when the form is invalid', () => {
     setup(createData);
 
     fixture.debugElement.query(By.css('form')).triggerEventHandler('submit', new Event('submit'));
 
     expect(reviewsService.createReview).not.toHaveBeenCalled();
-  });
-
-  it('should show the rating validation error after an invalid submit', () => {
-    setup(createData);
-
-    fixture.debugElement.query(By.css('form')).triggerEventHandler('submit', new Event('submit'));
-    fixture.detectChanges();
-
-    expect(fixture.debugElement.nativeElement.textContent).toContain('Please pick a rating between 1 and 5 stars.');
   });
 
   it('should ignore a second submit while the first is still in flight', async () => {
