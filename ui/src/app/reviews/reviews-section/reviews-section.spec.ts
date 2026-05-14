@@ -111,11 +111,11 @@ describe('ReviewsSection', () => {
 
     const text = fixture.debugElement.nativeElement.textContent;
 
-    expect(text).toContain('3.5 / 5');
+    expect(text).toContain('3.5 / 10');
     expect(text).toContain('2 reviews');
   });
 
-  it('should pass the average rounded to the nearest integer to the header RatingStars', () => {
+  it('should pass the average rounded to the nearest half star to the header RatingStars', () => {
     setup({ mediaType: 'Movie', tmdbId: 42 }, [aliceReview, bobReview]);
 
     const stars = fixture.debugElement.query(By.directive(RatingStars)).componentInstance as RatingStars;
