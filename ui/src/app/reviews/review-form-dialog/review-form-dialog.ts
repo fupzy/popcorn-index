@@ -7,7 +7,7 @@ import { MatInput } from '@angular/material/input';
 
 import { Review, ReviewMediaType, ReviewsService, SeasonReview } from '../reviews.service';
 import { ReviewSeason } from '../review-card/review-card';
-import { MAX_RATING_STARS, RatingStars } from '../rating-stars/rating-stars';
+import { MAX_RATING_VALUE, RatingStars } from '../rating-stars/rating-stars';
 
 export interface ReviewFormDialogData {
   readonly mediaType: ReviewMediaType;
@@ -74,7 +74,7 @@ export class ReviewFormDialog {
         season,
         form: this.formBuilder.group<SeasonFormGroup>(
           {
-            rating: this.formBuilder.control(existingSeason?.rating ?? 0, [Validators.min(0), Validators.max(MAX_RATING_STARS)]),
+            rating: this.formBuilder.control(existingSeason?.rating ?? 0, [Validators.min(0), Validators.max(MAX_RATING_VALUE)]),
             comment: this.formBuilder.control(existingSeason?.comment ?? '', [Validators.maxLength(MAX_COMMENT_LENGTH)])
           },
           { validators: commentRequiresRating }
@@ -83,7 +83,7 @@ export class ReviewFormDialog {
     });
 
     this.form = this.formBuilder.group<ReviewFormGroup>({
-      rating: this.formBuilder.control(existing?.rating ?? 0, [Validators.required, Validators.min(1), Validators.max(MAX_RATING_STARS)]),
+      rating: this.formBuilder.control(existing?.rating ?? 0, [Validators.required, Validators.min(1), Validators.max(MAX_RATING_VALUE)]),
       comment: this.formBuilder.control(existing?.comment ?? '', [Validators.maxLength(MAX_COMMENT_LENGTH)]),
       seasons: this.formBuilder.array(this.seasonForms.map((entry) => entry.form))
     });
