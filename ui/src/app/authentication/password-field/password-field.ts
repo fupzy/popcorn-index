@@ -36,11 +36,11 @@ export class PasswordField {
    * CD on input events and `MatFormField` propagates `markForCheck` when
    * its control's validity changes, so the template stays in sync.
    */
-  protected get visibleErrors(): string[] {
+  protected get visibleErrors(): { key: string; message: string }[] {
     const control = this.control();
 
     return Object.entries(this.errors())
       .filter(([key]) => control.hasError(key))
-      .map(([, message]) => message);
+      .map(([key, message]) => ({ key, message }));
   }
 }
