@@ -3,7 +3,6 @@ import { By } from '@angular/platform-browser';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { MatButtonToggleGroupHarness } from '@angular/material/button-toggle/testing';
-import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/testing';
 import { signal, WritableSignal } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable, of, Subject, throwError } from 'rxjs';
@@ -240,14 +239,14 @@ describe('ReviewsSection', () => {
       teardown: { destroyAfterEach: true }
     });
     fixture = TestBed.createComponent(ReviewsSection);
-    loader = TestbedHarnessEnvironment.loader(fixture);
+    materialTesting = new MaterialTesting(fixture);
     fixture.componentRef.setInput('mediaType', 'Movie');
     fixture.componentRef.setInput('tmdbId', 42);
     fixture.detectChanges();
 
-    const spinner = await loader.getHarnessOrNull(MatProgressSpinnerHarness);
+    const spinnerExists = await materialTesting.matProgressSpinner.exists();
 
-    expect(spinner).not.toBeNull();
+    expect(spinnerExists).toEqual(true);
   });
 
   it('should display an error message when loading reviews fails', () => {

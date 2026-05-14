@@ -2,8 +2,9 @@ import { ComponentFixture } from '@angular/core/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
 import { MatButtonTesting } from './mat-button-testing';
-import { MatIconButtonTesting } from './mat-icon-button-testing';
 import { MatFormFieldTesting } from './mat-form-field-testing';
+import { MatIconButtonTesting } from './mat-icon-button-testing';
+import { MatProgressSpinnerTesting } from './mat-progress-spinner-testing';
 
 /**
  * Centralized helper providing convenient access to Angular Material
@@ -38,6 +39,11 @@ export class MaterialTesting<T = unknown> {
   public readonly matIconButton: MatIconButtonTesting;
 
   /**
+   * Helper used to interact with Angular Material progress spinners.
+   */
+  public readonly matProgressSpinner: MatProgressSpinnerTesting;
+
+  /**
    * Creates a new MaterialTesting instance and initializes
    * all Material testing helpers using the provided fixture.
    *
@@ -52,5 +58,6 @@ export class MaterialTesting<T = unknown> {
     this.matFormField = new MatFormFieldTesting(loader);
     this.matButton = new MatButtonTesting(loader);
     this.matIconButton = new MatIconButtonTesting(loader);
+    this.matProgressSpinner = new MatProgressSpinnerTesting(loader);
   }
 }
