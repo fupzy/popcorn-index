@@ -33,3 +33,4 @@ packages/
 *.feature.cs
 /artifacts/
 logs/
+*.lscache
