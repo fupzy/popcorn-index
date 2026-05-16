@@ -7,7 +7,7 @@
       @if (season.episodes.length > 0) {
         <ol class="flex flex-col gap-3">
           @for (episode of season.episodes; track episode.id) {
-            <li class="border-l-2 border-gray-300 pl-3">
+            <li class="border-l-2 border-outline-variant pl-3">
               <div class="flex flex-wrap items-baseline gap-2">
                 <span class="font-semibold">{{ episode.episode_number }}. {{ episode.name }}</span>
                 @if (episode.air_date) {
