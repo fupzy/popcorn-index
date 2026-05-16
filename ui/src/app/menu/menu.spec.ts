@@ -81,6 +81,10 @@ describe('Menu', () => {
       expect(await materialTesting.matButton.exists('Logout')).toEqual(false);
     });
 
+    it('should not render a My Reviews button', async () => {
+      expect(await materialTesting.matButton.exists('My Reviews')).toEqual(false);
+    });
+
     it('should navigate to /login when clicking on the Login button', async () => {
       await materialTesting.matButton.click('Login');
 
@@ -97,6 +101,16 @@ describe('Menu', () => {
     it('should render a Logout button', async () => {
       expect(await materialTesting.matButton.exists('Logout')).toEqual(true);
       expect(await materialTesting.matButton.exists('Login')).toEqual(false);
+    });
+
+    it('should render a My Reviews button', async () => {
+      expect(await materialTesting.matButton.exists('My Reviews')).toEqual(true);
+    });
+
+    it('should navigate to /my-reviews when clicking on the My Reviews button', async () => {
+      await materialTesting.matButton.click('My Reviews');
+
+      expect(router.url).toEqual('/my-reviews');
     });
 
     it('should clear the token and navigate to /home when clicking on the Logout button', async () => {
