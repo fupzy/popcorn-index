@@ -25,7 +25,7 @@
       <mat-progress-spinner mode="indeterminate" diameter="32" />
     </div>
   } @else if (errorMessage(); as message) {
-    <p class="text-sm text-red-600" role="alert">{{ message }}</p>
+    <p class="text-sm text-error" role="alert">{{ message }}</p>
   } @else {
     @if (ownReview(); as own) {
       <app-review-card [review]="own" [showOwnerActions]="true" [seasons]="seasons()" (editRequested)="openForm(own.userId)" />

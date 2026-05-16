@@ -1,1 +1,18 @@
 @import 'tailwindcss';
+
+@theme {
+  /* Material theme tokens exposed as Tailwind color utilities */
+  --color-primary: var(--mat-sys-primary);
+  --color-on-primary: var(--mat-sys-on-primary);
+  --color-surface: var(--mat-sys-surface);
+  --color-on-surface: var(--mat-sys-on-surface);
+  --color-surface-container: var(--mat-sys-surface-container);
+  --color-outline-variant: var(--mat-sys-outline-variant);
+  --color-error: var(--mat-sys-error);
+
+  /* Off-theme accent: review rating stars (Material palette has no
+     amber/gold, but star ratings need an unambiguous gold color). */
+  --color-rating-star: #f59e0b;
+  --color-rating-star-emphasis: #b45309;
+  --color-rating-star-surface: #fef3c7;
+}

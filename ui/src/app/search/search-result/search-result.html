@@ -12,7 +12,7 @@
             @if (posterUrl(media); as poster) {
               <img [src]="poster" [alt]="media.title" class="w-full rounded-lg shadow-md aspect-2/3 object-cover" />
             } @else {
-              <div class="w-full rounded-lg bg-gray-200 aspect-2/3 flex items-center justify-center text-sm opacity-60">No poster</div>
+              <div class="w-full rounded-lg bg-surface-container aspect-2/3 flex items-center justify-center text-sm opacity-60">No poster</div>
             }
           </a>
           <div class="flex flex-col">
