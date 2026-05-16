@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting, TestRequest } from '@a
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { MaterialTesting, provideRoutingTesting } from '@testing';
 
@@ -14,6 +15,7 @@ describe('Register', () => {
   let materialTesting: MaterialTesting;
   let httpTesting: HttpTestingController;
   let router: Router;
+  let snackBar: MatSnackBar;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,6 +30,7 @@ describe('Register', () => {
     materialTesting = new MaterialTesting(fixture);
     httpTesting = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router);
+    snackBar = TestBed.inject(MatSnackBar);
   });
 
   afterEach(() => {
@@ -142,6 +145,8 @@ describe('Register', () => {
 
   errorResponseCases.forEach(({ description, respond, expectedMessage }) => {
     it(description, async () => {
+      const snackBarSpy = vi.spyOn(snackBar, 'open');
+
       await materialTesting.matFormField.setMatInputValue('Username', 'alice');
       await materialTesting.matFormField.setMatInputValue('Password', 'secret-pw');
       await materialTesting.matFormField.setMatInputValue('Confirm password', 'secret-pw');
@@ -152,10 +157,13 @@ describe('Register', () => {
       respond(request);
 
       await fixture.whenStable();
-      const alert = fixture.debugElement.query(By.css('[role="alert"]'));
 
-      expect(alert).not.toBeNull();
-      expect(alert.nativeElement.textContent).toContain(expectedMessage);
+      expect(snackBarSpy).toHaveBeenCalledOnce();
+      const [message, , config] = snackBarSpy.mock.calls[0];
+
+      expect(message).toContain(expectedMessage);
+      expect(config?.horizontalPosition).toEqual('right');
+      expect(config?.verticalPosition).toEqual('bottom');
     });
   });
 

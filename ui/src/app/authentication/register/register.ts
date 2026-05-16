@@ -4,6 +4,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModu
 import { Router } from '@angular/router';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthFormShell } from '../auth-form-shell/auth-form-shell';
 import { AuthenticationService } from '../authentication.service';
@@ -32,11 +33,11 @@ export class Register {
   protected readonly form;
   protected readonly hidePassword = signal(true);
   protected readonly isSubmitting = signal(false);
-  protected readonly errorMessage = signal<string | null>(null);
 
   private readonly authenticationService = inject(AuthenticationService);
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly snackBar = inject(MatSnackBar);
 
   constructor() {
     this.form = this.formBuilder.nonNullable.group(
@@ -61,7 +62,6 @@ export class Register {
     const { username, password } = this.form.getRawValue();
 
     this.isSubmitting.set(true);
-    this.errorMessage.set(null);
 
     this.authenticationService.register(username, password).subscribe({
       next: () => {
@@ -70,7 +70,11 @@ export class Register {
       },
       error: (error: HttpErrorResponse) => {
         this.isSubmitting.set(false);
-        this.errorMessage.set(extractErrorMessage(error));
+        this.snackBar.open(extractErrorMessage(error), 'Close', {
+          duration: 5000,
+          horizontalPosition: 'right',
+          verticalPosition: 'bottom'
+        });
       }
     });
   }
