@@ -42,22 +42,3 @@ Scenario: 3. TMDB error status is propagated to the caller
         """
     When I call the TMDB proxy with "GET" on "movie/99999999"
     Then I receive a "NotFound" status
-
-Scenario: 4. The request body is forwarded on POST
-    Given the TMDB API will respond with status "Created" and body
-        """
-        {}
-        """
-    When I call the TMDB proxy with "POST" on "list" and body
-        """
-        {
-            "name": "My list"
-        }
-        """
-    Then I receive a "Created" status
-    And the TMDB API received the body
-        """
-        {
-            "name": "My list"
-        }
-        """

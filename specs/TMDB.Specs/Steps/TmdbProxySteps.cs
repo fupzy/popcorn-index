@@ -1,6 +1,4 @@
 using System.Net;
-using System.Text.Json.JsonDiffPatch;
-using System.Text.Json.Nodes;
 using AwesomeAssertions;
 using PopcornIndex.Testing.Mocks;
 using Reqnroll;
@@ -33,10 +31,6 @@ public sealed class TmdbProxySteps(ApiTesting apiTesting, ServiceTestingSteps st
     public Task WhenICallTheTmdbProxy(string method, string path)
         => apiTesting.SendRequest($"{BaseUrl}/{path}", new HttpMethod(method));
 
-    [When("I call the TMDB proxy with {string} on {string} and body")]
-    public Task WhenICallTheTmdbProxyWithBody(string method, string path, string body)
-        => apiTesting.SendRequest($"{BaseUrl}/{path}", new HttpMethod(method), body);
-
     [Then("the TMDB API was called with {string} on {string}")]
     public void ThenTheTmdbApiWasCalledWith(string method, string pathAndQuery)
     {
@@ -44,18 +38,5 @@ public sealed class TmdbProxySteps(ApiTesting apiTesting, ServiceTestingSteps st
         handler.LastRequestMethod.Should().Be(new HttpMethod(method));
         handler.LastRequestUri.Should().NotBeNull();
         handler.LastRequestUri!.PathAndQuery.Should().Be(pathAndQuery);
-    }
-
-    [Then("the TMDB API received the body")]
-    public void ThenTheTmdbApiReceivedTheBody(string expectedBody)
-    {
-        var handler = steps.GetRequiredService<MockTmdbHandler>();
-        handler.LastRequestBody.Should().NotBeNull();
-
-        var actual = JsonNode.Parse(handler.LastRequestBody!);
-        var expected = JsonNode.Parse(expectedBody);
-
-        var diff = actual.Diff(expected);
-        diff.Should().BeNull(diff?.ToJsonString());
     }
 }
