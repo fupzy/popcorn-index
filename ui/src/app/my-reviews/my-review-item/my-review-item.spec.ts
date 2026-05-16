@@ -8,7 +8,6 @@ import { provideRoutingTesting } from '@testing';
 import { MediaDetailService, TmdbMovieDetails, TmdbSeriesDetails } from '../../media-detail/media-detail.service';
 import { Review } from '../../reviews/reviews.service';
 import { ReviewCard } from '../../reviews/review-card/review-card';
-
 import { MyReviewItem } from './my-review-item';
 
 type GetMovieDetailsFn = (id: string) => Observable<TmdbMovieDetails>;
