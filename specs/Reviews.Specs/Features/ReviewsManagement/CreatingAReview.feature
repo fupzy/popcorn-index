@@ -2,7 +2,10 @@
 Feature: Creating a review
 
 Scenario: 1. Creating a movie review persists it
-    Given the GUID provider next ids are
+    Given the defined users
+        | Id                                   | Username | PasswordHash |
+        | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Alice    | hash         |
+    And the GUID provider next ids are
         | Id                                   |
         | 11111111-1111-1111-1111-111111111111 |
     When I create a review with the command
