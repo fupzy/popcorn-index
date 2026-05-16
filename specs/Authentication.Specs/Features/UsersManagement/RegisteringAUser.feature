@@ -45,7 +45,26 @@ Scenario Outline: 2. Logging a user in with an invalid password validation
         | "aaaa"   | Password | Password must be at least 6 characters long |
         | "aaaaa"  | Password | Password must be at least 6 characters long |
 
-Scenario Outline: 3. Logging a user in with an invalid username validation
+Scenario: 3. Registering a user with an already taken username
+    Given the defined users
+        | Id                                   | Username | PasswordHash                   |
+        | 8fcbb75f-83b4-40c1-a01a-59982dafb7f1 | JohnDoe  | JohnDoe_some_john_doe_password |
+    When I register a user with the command
+        """
+            {
+                "username": "JohnDoe",
+                "password": "another_password"
+            }
+        """
+    Then I receive a "BadRequest" status
+    And I receive the validation errors
+        """
+            {
+                "Username": ["Username already taken"]
+            }
+        """
+
+Scenario Outline: 4. Logging a user in with an invalid username validation
      When I register a user with the command
         """
             {

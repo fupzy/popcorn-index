@@ -2,6 +2,8 @@
 using Authentication.Domain;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Utilities.Extensions;
 
 namespace Authentication.Controllers;
@@ -25,7 +27,15 @@ public sealed class AuthenticationController(
             return this.ValidationProblem(this.ModelState);
         }
 
-        await authService.Register(command.Username, command.Password);
+        try
+        {
+            await authService.Register(command.Username, command.Password);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+        {
+            this.ModelState.AddModelError(nameof(command.Username), "Username already taken");
+            return this.ValidationProblem(this.ModelState);
+        }
 
         return this.Ok();
     }
