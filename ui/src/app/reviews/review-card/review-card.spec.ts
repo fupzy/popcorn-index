@@ -67,25 +67,25 @@ describe('ReviewCard', () => {
     expect(text).not.toContain('Loved it');
   });
 
-  it('should not display "Your review" badge when isOwner is false', () => {
+  it('should not display "Your review" badge when showOwnerActions is false', () => {
     fixture.componentRef.setInput('review', mockReview);
-    fixture.componentRef.setInput('isOwner', false);
+    fixture.componentRef.setInput('showOwnerActions', false);
     fixture.detectChanges();
 
     expect(fixture.debugElement.nativeElement.textContent).not.toContain('Your review');
   });
 
-  it('should display "Your review" badge when isOwner is true', () => {
+  it('should display "Your review" badge when showOwnerActions is true', () => {
     fixture.componentRef.setInput('review', mockReview);
-    fixture.componentRef.setInput('isOwner', true);
+    fixture.componentRef.setInput('showOwnerActions', true);
     fixture.detectChanges();
 
     expect(fixture.debugElement.nativeElement.textContent).toContain('Your review');
   });
 
-  it('should not render the actions menu when isOwner is false', async () => {
+  it('should not render the actions menu when showOwnerActions is false', async () => {
     fixture.componentRef.setInput('review', mockReview);
-    fixture.componentRef.setInput('isOwner', false);
+    fixture.componentRef.setInput('showOwnerActions', false);
     fixture.detectChanges();
 
     const menu = await loader.getHarnessOrNull(MatMenuHarness);
@@ -95,7 +95,7 @@ describe('ReviewCard', () => {
 
   it('should emit editRequested when the Edit menu item is clicked', async () => {
     fixture.componentRef.setInput('review', mockReview);
-    fixture.componentRef.setInput('isOwner', true);
+    fixture.componentRef.setInput('showOwnerActions', true);
     fixture.detectChanges();
     const emitSpy = vi.spyOn(component.editRequested, 'emit');
 

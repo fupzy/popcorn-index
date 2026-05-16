@@ -52,6 +52,10 @@ export class ReviewsService {
     return this.httpClient.get<Review[]>(`${this.baseUrl}/series/${tmdbId}`);
   }
 
+  public getUserReviews(userId: string): Observable<Review[]> {
+    return this.httpClient.get<Review[]>(`${this.baseUrl}/users/${userId}`);
+  }
+
   public createReview(command: CreateReviewCommand): Observable<Review> {
     return this.httpClient.post<Review>(this.baseUrl, command);
   }

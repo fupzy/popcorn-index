@@ -56,6 +56,17 @@ describe('ReviewsService', () => {
     expect(received).toEqual([mockReview]);
   });
 
+  it('should GET user reviews', () => {
+    let received: Review[] | undefined;
+    service.getUserReviews(mockReview.userId).subscribe((reviews) => (received = reviews));
+
+    const request = httpTesting.expectOne(`${baseUrl}/users/${mockReview.userId}`);
+    expect(request.request.method).toBe('GET');
+    request.flush([mockReview]);
+
+    expect(received).toEqual([mockReview]);
+  });
+
   it('should POST to create a review', () => {
     const command: CreateReviewCommand = {
       userId: mockReview.userId,
