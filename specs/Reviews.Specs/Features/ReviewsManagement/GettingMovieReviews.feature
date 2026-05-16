@@ -3,11 +3,11 @@ Feature: Getting movie reviews
 
 Background:
     Given the defined reviews
-        | Id                                   | UserId                               | MediaType | TmdbId | Rating | Comment      | CreatedAt                 | UpdatedAt                 |
-        | 11111111-1111-1111-1111-111111111111 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Movie     | 550    | 9      | Mind blowing | 2026-01-01T10:00:00+00:00 | 2026-01-02T10:00:00+00:00 |
-        | 22222222-2222-2222-2222-222222222222 | bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb | Movie     | 550    | 7      | Solid        | 2026-01-01T10:00:00+00:00 | 2026-01-03T10:00:00+00:00 |
-        | 33333333-3333-3333-3333-333333333333 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Movie     | 999    | 5      | Other movie  | 2026-01-01T10:00:00+00:00 | 2026-01-01T10:00:00+00:00 |
-        | 44444444-4444-4444-4444-444444444444 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Series    | 550    | 8      | Same id, TV  | 2026-01-01T10:00:00+00:00 | 2026-01-01T10:00:00+00:00 |
+        | Id                                   | UserId                               | Username | MediaType | TmdbId | Rating | Comment      | CreatedAt                 | UpdatedAt                 |
+        | 11111111-1111-1111-1111-111111111111 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Alice    | Movie     | 550    | 9      | Mind blowing | 2026-01-01T10:00:00+00:00 | 2026-01-02T10:00:00+00:00 |
+        | 22222222-2222-2222-2222-222222222222 | bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb | Bob      | Movie     | 550    | 7      | Solid        | 2026-01-01T10:00:00+00:00 | 2026-01-03T10:00:00+00:00 |
+        | 33333333-3333-3333-3333-333333333333 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Alice    | Movie     | 999    | 5      | Other movie  | 2026-01-01T10:00:00+00:00 | 2026-01-01T10:00:00+00:00 |
+        | 44444444-4444-4444-4444-444444444444 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Alice    | Series    | 550    | 8      | Same id, TV  | 2026-01-01T10:00:00+00:00 | 2026-01-01T10:00:00+00:00 |
 
 Scenario: 1. Returning all reviews of a given movie, most recent first
     When I get the reviews of movie 550
@@ -18,6 +18,7 @@ Scenario: 1. Returning all reviews of a given movie, most recent first
             {
                 "id": "22222222-2222-2222-2222-222222222222",
                 "userId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+                "username": "Bob",
                 "mediaType": "Movie",
                 "tmdbId": 550,
                 "rating": 7,
@@ -29,6 +30,7 @@ Scenario: 1. Returning all reviews of a given movie, most recent first
             {
                 "id": "11111111-1111-1111-1111-111111111111",
                 "userId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                "username": "Alice",
                 "mediaType": "Movie",
                 "tmdbId": 550,
                 "rating": 9,

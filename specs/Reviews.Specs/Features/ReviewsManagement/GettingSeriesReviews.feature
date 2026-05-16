@@ -3,8 +3,8 @@ Feature: Getting series reviews
 
 Background:
     Given the defined reviews
-        | Id                                   | UserId                               | MediaType | TmdbId | Rating | Comment    | CreatedAt                 | UpdatedAt                 |
-        | 55555555-5555-5555-5555-555555555555 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Series    | 1399   | 9      | Best ever  | 2026-02-01T10:00:00+00:00 | 2026-02-02T10:00:00+00:00 |
+        | Id                                   | UserId                               | Username | MediaType | TmdbId | Rating | Comment    | CreatedAt                 | UpdatedAt                 |
+        | 55555555-5555-5555-5555-555555555555 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Alice    | Series    | 1399   | 9      | Best ever  | 2026-02-01T10:00:00+00:00 | 2026-02-02T10:00:00+00:00 |
     And the defined season reviews
         | ReviewId                             | SeasonNumber | Rating | Comment       |
         | 55555555-5555-5555-5555-555555555555 | 1            | 9      | Strong start  |
@@ -19,6 +19,7 @@ Scenario: 1. Returning a series review with its per-season notes
             {
                 "id": "55555555-5555-5555-5555-555555555555",
                 "userId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                "username": "Alice",
                 "mediaType": "Series",
                 "tmdbId": 1399,
                 "rating": 9,
