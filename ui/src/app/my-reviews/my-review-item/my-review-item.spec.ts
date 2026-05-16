@@ -117,11 +117,11 @@ describe('MyReviewItem', () => {
     expect(fixture.debugElement.nativeElement.textContent).not.toContain('The Matrix');
   });
 
-  it('should forward the review to the underlying review card as the owner', () => {
+  it('should forward the review to the underlying review card without owner actions', () => {
     setup(movieReview);
 
     const card = fixture.debugElement.query(By.directive(ReviewCard)).componentInstance as ReviewCard;
     expect(card.review()).toEqual(movieReview);
-    expect(card.isOwner()).toBe(true);
+    expect(card.showOwnerActions()).toBe(false);
   });
 });

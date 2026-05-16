@@ -36,7 +36,7 @@ export interface ReviewSeason {
 })
 export class ReviewCard {
   public readonly review = input.required<Review>();
-  public readonly isOwner = input<boolean>(false);
+  public readonly showOwnerActions = input<boolean>(false);
   public readonly seasons = input<ReviewSeason[]>([]);
 
   public readonly editRequested = output<void>();

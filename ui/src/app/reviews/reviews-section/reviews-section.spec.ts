@@ -161,9 +161,9 @@ describe('ReviewsSection', () => {
     const ownerCard = cards[0].componentInstance as ReviewCard;
     const otherCard = cards[1].componentInstance as ReviewCard;
     expect(ownerCard.review().id).toBe('r1');
-    expect(ownerCard.isOwner()).toBe(true);
+    expect(ownerCard.showOwnerActions()).toBe(true);
     expect(otherCard.review().id).toBe('r2');
-    expect(otherCard.isOwner()).toBe(false);
+    expect(otherCard.showOwnerActions()).toBe(false);
   });
 
   it('should open the dialog with the form data when Write a review is clicked', async () => {

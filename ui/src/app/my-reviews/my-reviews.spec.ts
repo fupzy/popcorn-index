@@ -8,7 +8,7 @@ import { MaterialTesting, provideRoutingTesting } from '@testing';
 
 import { AuthenticationService } from '../authentication/authentication.service';
 import { Review, ReviewsService } from '../reviews/reviews.service';
-
+import { MediaDetailService } from '../media-detail/media-detail.service';
 import { MyReviews } from './my-reviews';
 import { MyReviewItem } from './my-review-item/my-review-item';
 
@@ -53,7 +53,8 @@ describe('MyReviews', () => {
       providers: [
         provideRoutingTesting(),
         { provide: ReviewsService, useValue: reviewsService },
-        { provide: AuthenticationService, useValue: { currentUserId } }
+        { provide: AuthenticationService, useValue: { currentUserId } },
+        { provide: MediaDetailService, useValue: { getMovieDetails: () => of({ title: '' }), getSeriesDetails: () => of({ name: '' }) } }
       ],
       teardown: { destroyAfterEach: true }
     });

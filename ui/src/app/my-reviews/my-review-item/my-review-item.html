@@ -3,5 +3,5 @@
     <mat-icon class="text-base!">{{ review().mediaType === 'Movie' ? 'movie' : 'tv' }}</mat-icon>
     <span>{{ mediaTypeLabel() }} · {{ mediaTitle() ?? 'Loading…' }}</span>
   </a>
-  <app-review-card [review]="review()" [isOwner]="true" />
+  <app-review-card [review]="review()" />
 </div>

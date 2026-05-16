@@ -28,7 +28,7 @@
     <p class="text-sm text-red-600" role="alert">{{ message }}</p>
   } @else {
     @if (ownReview(); as own) {
-      <app-review-card [review]="own" [isOwner]="true" [seasons]="seasons()" (editRequested)="openForm(own.userId)" />
+      <app-review-card [review]="own" [showOwnerActions]="true" [seasons]="seasons()" (editRequested)="openForm(own.userId)" />
     }
 
     @if (otherReviews().length > 0) {
