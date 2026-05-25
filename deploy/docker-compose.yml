@@ -1,0 +1,55 @@
+# Lancement depuis la racine du repo :
+#   docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --build
+# Les chemins relatifs sont resolus depuis ce fichier (donc deploy/).
+services:
+  db:
+    image: postgres:15.7-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_ROOT_PASSWORD:-postgrespw}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/api.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-popcorn}
+      POSTGRES_USER: ${POSTGRES_USER:-popcorn}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-popcorn}
+      MIGRATE_DATABASE: "true"
+      Jwt__Key: ${JWT_KEY:?JWT_KEY est requis}
+      Jwt__Issuer: PopcornIndex
+      Jwt__Audience: PopcornIndexUsers
+    expose:
+      - "8080"
+
+  ui:
+    build:
+      context: ..
+      dockerfile: deploy/ui.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "${UI_PORT:-8080}:80"
+
+volumes:
+  pgdata:
