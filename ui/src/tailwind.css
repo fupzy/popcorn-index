@@ -4,6 +4,10 @@
   /* Material theme tokens exposed as Tailwind color utilities */
   --color-primary: var(--mat-sys-primary);
   --color-on-primary: var(--mat-sys-on-primary);
+  --color-tertiary: #b45309;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #fde7c6;
+  --color-on-tertiary-container: #7c2d12;
   --color-surface: var(--mat-sys-surface);
   --color-on-surface: var(--mat-sys-on-surface);
   --color-surface-container: var(--mat-sys-surface-container);
