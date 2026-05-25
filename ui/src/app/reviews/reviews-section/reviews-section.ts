@@ -96,7 +96,7 @@ export class ReviewsSection implements OnInit {
     const dialogRef = this.dialog.open<ReviewFormDialog, ReviewFormDialogData, Review | null>(ReviewFormDialog, {
       data,
       width: '560px',
-      maxWidth: '95vw',
+      maxWidth: '90vw',
       autoFocus: 'first-tabbable'
     });
 
