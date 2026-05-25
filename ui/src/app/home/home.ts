@@ -17,6 +17,7 @@ import { RandomMediaService } from './random-media.service';
   }
 })
 export class Home implements OnInit {
+  protected readonly logoRotation = signal(0);
   protected readonly media = signal<TmdbMedia | null>(null);
   protected readonly isLoading = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
@@ -38,6 +39,7 @@ export class Home implements OnInit {
   }
 
   protected loadRandomMedia(): void {
+    this.logoRotation.update((value) => value + 360);
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.media.set(null);
