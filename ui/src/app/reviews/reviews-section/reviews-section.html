@@ -1,7 +1,7 @@
 <section class="flex flex-col gap-4">
   <header class="flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center gap-3">
-      <h2 class="text-lg font-semibold leading-none m-0 text-(--mat-sys-primary)">Reviews</h2>
+      <h2 class="text-lg font-semibold leading-none m-0 text-tertiary">Reviews</h2>
       @if (averageRating(); as average) {
         <div class="flex items-center gap-2">
           <app-rating-stars [value]="average.rounded" ariaLabel="Average rating: {{ average.value }} out of 10" />

@@ -4,15 +4,22 @@
 html {
   @include mat.theme(
     (
-      color: mat.$blue-palette,
+      color: (
+        primary: mat.$blue-palette,
+        tertiary: mat.$orange-palette
+      ),
       typography: mat.m2-define-typography-config()
     )
   );
 }
 
 body {
-  background: var(--mat-sys-surface);
+  background: #f3ede1;
   color: var(--mat-sys-on-surface);
+}
+
+app-root > mat-card {
+  --mat-card-elevated-container-color: #f3ede1;
 }
 
 mat-card-header.header {
