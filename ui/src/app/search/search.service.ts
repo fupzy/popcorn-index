@@ -61,7 +61,7 @@ export interface RawTmdbResponse<T> {
 
 const nonEmptyOrNull = (value: string | undefined): string | null => (value !== undefined && value.length > 0 ? value : null);
 
-const movieToMedia = (raw: RawMovieResult): TmdbMedia => ({
+export const movieToMedia = (raw: RawMovieResult): TmdbMedia => ({
   id: raw.id,
   mediaType: 'movie',
   title: raw.title,
@@ -71,7 +71,7 @@ const movieToMedia = (raw: RawMovieResult): TmdbMedia => ({
   vote_average: raw.vote_average
 });
 
-const tvToMedia = (raw: RawTvResult): TmdbMedia => ({
+export const tvToMedia = (raw: RawTvResult): TmdbMedia => ({
   id: raw.id,
   mediaType: 'tv',
   title: raw.name,

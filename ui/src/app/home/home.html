@@ -1,1 +1,34 @@
-<img src="assets/main-logo.png" alt="Popcorn Index" width="600" height="200" />
+<div class="flex flex-col items-center gap-6 px-6 pb-10 w-full flex-1 min-h-0">
+  <button type="button" (click)="loadRandomMedia()" class="cursor-pointer bg-transparent border-0 p-0" aria-label="Discover another title">
+    <img src="assets/main-logo.png" alt="Popcorn Index" width="600" height="200" />
+  </button>
+
+  <app-loading-shell [isLoading]="isLoading()" [errorMessage]="errorMessage()">
+    @if (media(); as media) {
+      <article class="flex flex-col gap-6 md:flex-row md:items-start max-w-3xl w-full flex-1 min-h-0">
+        @if (posterPath(); as poster) {
+          <img [src]="poster" [alt]="media.title" class="w-64 md:w-auto md:h-full max-h-full rounded-lg shadow-md aspect-2/3 object-cover" />
+        } @else {
+          <div class="w-64 md:w-auto md:h-full max-h-full rounded-lg bg-surface-container aspect-2/3 flex items-center justify-center text-sm opacity-60">No poster</div>
+        }
+        <div class="flex flex-col gap-3 flex-1">
+          <header class="flex flex-col gap-1">
+            <span class="text-xs uppercase tracking-wide font-medium opacity-70">
+              {{ media.mediaType === 'movie' ? 'Movie' : 'Series' }} &middot; Suggested for you
+            </span>
+            <h1 class="text-2xl font-semibold">{{ media.title }}</h1>
+            @if (media.date) {
+              <p class="text-sm opacity-70">{{ media.date }}</p>
+            }
+          </header>
+          @if (media.overview) {
+            <p class="leading-relaxed">{{ media.overview }}</p>
+          }
+          @if (detailLink(); as link) {
+            <a [routerLink]="link" class="self-start underline text-primary">See reviews</a>
+          }
+        </div>
+      </article>
+    }
+  </app-loading-shell>
+</div>
