@@ -1,5 +1,7 @@
 # popcorn-index
 
+Live app: https://popcornindex.socoolmen.me
+
 ## Environment variables
 
 The backend proxies TMDB calls and requires an API key exposed as an environment variable.
