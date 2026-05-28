@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1.7
-# Contexte de build : racine du repo
+# Build context: repo root
 # docker build -f deploy/api.Dockerfile -t popcorn-index-api .
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-COPY PopcornIndex.slnx Directory.Packages.props Directory.Build.props global.json* ./
+COPY PopcornIndex.slnx Directory.Packages.props Directory.Build.props appsettings.props global.json* ./
 COPY src/ ./src/
 COPY database/ ./database/
 COPY testing/ ./testing/
@@ -27,10 +27,13 @@ ENV ASPNETCORE_URLS=http://+:8080 \
     APPSETTINGS_FOLDER=/app \
     ENV_FILE=/app/.env.empty
 
-RUN useradd -m -u 1000 app && touch /app/.env.empty && chown -R app:app /app
+# The aspnet:10.0 image already provides a non-root 'app' user: reuse it.
+RUN touch /app/.env.empty && chown app:app /app/.env.empty
 USER app
 
 COPY --from=build --chown=app:app /app/publish ./
+# appsettings.json is shared (outside src/): bundle it into APPSETTINGS_FOLDER (/app).
+COPY --chown=app:app appsettings/appsettings.json ./appsettings.json
 
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "PopcornIndex.dll"]

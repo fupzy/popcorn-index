@@ -1,20 +1,26 @@
-# Lancement depuis la racine du repo :
+# Launch from the repo root:
 #   docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --build
-# Les chemins relatifs sont resolus depuis ce fichier (donc deploy/).
+# Relative paths are resolved from this file (i.e. deploy/).
+#
+# Only the 'proxy' container is exposed on the host (HTTP_PORT). It routes:
+#   - /popcorn-index/*  -> api  (stripping the /popcorn-index prefix)
+#   - everything else   -> ui
+# The host's reverse proxy / TLS only needs to forward the domain to HTTP_PORT.
 services:
   db:
     image: postgres:15.7-alpine
     restart: unless-stopped
+    # The image creates the application user and database directly from these
+    # variables: no need for a superuser or an init.sql.
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_ROOT_PASSWORD:-postgrespw}
+      POSTGRES_DB: ${POSTGRES_DB:-popcorn}
+      POSTGRES_USER: ${POSTGRES_USER:-popcorn}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-popcorn}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ../database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-popcorn} -d ${POSTGRES_DB:-popcorn}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -35,9 +41,10 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-popcorn}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-popcorn}
       MIGRATE_DATABASE: "true"
-      Jwt__Key: ${JWT_KEY:?JWT_KEY est requis}
+      Jwt__Key: ${JWT_KEY:?JWT_KEY is required}
       Jwt__Issuer: PopcornIndex
       Jwt__Audience: PopcornIndexUsers
+      TMDB_API_KEY: ${TMDB_API_KEY:?TMDB_API_KEY is required}
     expose:
       - "8080"
 
@@ -48,8 +55,19 @@ services:
     restart: unless-stopped
     depends_on:
       - api
+    expose:
+      - "80"
+
+  proxy:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      - api
+      - ui
+    volumes:
+      - ./proxy.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
-      - "${UI_PORT:-8080}:80"
+      - "${HTTP_PORT:-8080}:80"
 
 volumes:
   pgdata:

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# Contexte de build : racine du repo
+# Build context: repo root
 # docker build -f deploy/ui.Dockerfile -t popcorn-index-ui .
 
 FROM node:22-alpine AS build
