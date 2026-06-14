@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, output } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, OnInit, output } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { MediaTypeFilter, SearchService, TmdbLanguage } from '../search.service';
@@ -61,6 +62,7 @@ export class SearchBar implements OnInit {
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly searchService = inject(SearchService);
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     this.form = this.formBuilder.nonNullable.group({
@@ -80,14 +82,31 @@ export class SearchBar implements OnInit {
       language: this.initialLanguage(),
       mediaType: this.initialMediaType()
     });
+
+    // Re-run the search automatically when the user changes the language or
+    // media type, but only once the form holds an actual query. Subscribing
+    // after the initial setValue keeps the pre-fill from triggering a search.
+    merge(this.form.controls.language.valueChanges, this.form.controls.mediaType.valueChanges)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.emitSearch());
   }
 
   protected onSubmit(): void {
+    this.emitSearch();
+  }
+
+  private emitSearch(): void {
     if (this.form.invalid) {
       return;
     }
 
     const { query, language, mediaType } = this.form.getRawValue();
-    this.searchRequested.emit({ query: query.trim(), language, mediaType });
+    const trimmedQuery = query.trim();
+
+    if (trimmedQuery.length === 0) {
+      return;
+    }
+
+    this.searchRequested.emit({ query: trimmedQuery, language, mediaType });
   }
 }

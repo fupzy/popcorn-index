@@ -144,10 +144,11 @@ describe('SearchBar', () => {
   it('should emit the language selected by the user', async () => {
     createComponent();
 
-    const emitSpy = vi.spyOn(component.searchRequested, 'emit');
-
     await materialTesting.matFormField.setMatInputValue('Search movies & series', 'matrix');
     await materialTesting.matFormField.setMatSelectValue('Language', 'English');
+
+    const emitSpy = vi.spyOn(component.searchRequested, 'emit');
+
     await materialTesting.matIconButton.click('mat-icon');
 
     const expected: SearchRequest = { query: 'matrix', language: 'en', mediaType: 'all' };
@@ -157,14 +158,59 @@ describe('SearchBar', () => {
   it('should emit the media type selected by the user', async () => {
     createComponent();
 
-    const emitSpy = vi.spyOn(component.searchRequested, 'emit');
-
     await materialTesting.matFormField.setMatInputValue('Search movies & series', 'thrones');
     await materialTesting.matFormField.setMatSelectValue('Type', 'Series');
+
+    const emitSpy = vi.spyOn(component.searchRequested, 'emit');
+
     await materialTesting.matIconButton.click('mat-icon');
 
     const expected: SearchRequest = { query: 'thrones', language: 'fr', mediaType: 'tv' };
     expect(emitSpy).toHaveBeenCalledExactlyOnceWith(expected);
+  });
+
+  it('should re-emit searchRequested when the media type changes and the query is filled', async () => {
+    createComponent();
+
+    await materialTesting.matFormField.setMatInputValue('Search movies & series', 'matrix');
+    const emitSpy = vi.spyOn(component.searchRequested, 'emit');
+
+    await materialTesting.matFormField.setMatSelectValue('Type', 'Movies');
+
+    const expected: SearchRequest = { query: 'matrix', language: 'fr', mediaType: 'movie' };
+    expect(emitSpy).toHaveBeenCalledExactlyOnceWith(expected);
+  });
+
+  it('should re-emit searchRequested when the language changes and the query is filled', async () => {
+    createComponent();
+
+    await materialTesting.matFormField.setMatInputValue('Search movies & series', 'matrix');
+    const emitSpy = vi.spyOn(component.searchRequested, 'emit');
+
+    await materialTesting.matFormField.setMatSelectValue('Language', 'English');
+
+    const expected: SearchRequest = { query: 'matrix', language: 'en', mediaType: 'all' };
+    expect(emitSpy).toHaveBeenCalledExactlyOnceWith(expected);
+  });
+
+  it('should not re-emit searchRequested when the media type changes while the query is empty', async () => {
+    createComponent();
+
+    const emitSpy = vi.spyOn(component.searchRequested, 'emit');
+
+    await materialTesting.matFormField.setMatSelectValue('Type', 'Movies');
+
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not re-emit searchRequested when the language changes while the query is empty', async () => {
+    createComponent();
+
+    const emitSpy = vi.spyOn(component.searchRequested, 'emit');
+
+    await materialTesting.matFormField.setMatSelectValue('Language', 'English');
+
+    expect(emitSpy).not.toHaveBeenCalled();
   });
 
   it('should pre-fill the form with the initialQuery, initialLanguage and initialMediaType inputs', async () => {
