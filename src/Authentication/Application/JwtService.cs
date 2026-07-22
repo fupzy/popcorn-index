@@ -5,6 +5,7 @@ using Authentication.Domain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Users.Domain;
+using Utilities.Extensions;
 
 namespace Authentication.Application;
 
@@ -25,7 +26,7 @@ public sealed class JwtService(IConfiguration configuration) : IJwtService
             new Claim(JwtRegisteredClaimNames.Name, user.Username)
         };
 
-        var jwtConfigurationKey = configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt Key setting is missing!");
+        var jwtConfigurationKey = configuration.GetJwtSigningKey();
 
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(jwtConfigurationKey)

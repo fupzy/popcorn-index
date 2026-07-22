@@ -154,16 +154,18 @@ npm run lint
 
 ### 1. Environment variables
 
-The backend proxies TMDB calls and requires an API key:
+The backend requires two secrets, provided as environment variables:
 
 - `TMDB_API_KEY` — your TMDB v3 API key (get one at https://www.themoviedb.org/settings/api).
+- `JWT_KEY` — the JWT signing key, at least 32 bytes (e.g. `openssl rand -base64 64`).
 
-#### How to set it (Windows)
+#### How to set them (Windows)
 
 Via PowerShell (persistent, User scope):
 
 ```powershell
 setx TMDB_API_KEY "your_api_key_here"
+setx JWT_KEY "your_jwt_signing_key_here"
 ```
 
 Or via `Paramètres Windows > Système > Informations système > Paramètres système avancés > Variables d'environnement`.
