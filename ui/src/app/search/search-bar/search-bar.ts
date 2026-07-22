@@ -6,8 +6,8 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { merge } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { merge, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { MediaTypeFilter, SearchService, TmdbLanguage } from '../search.service';
 
@@ -37,7 +37,32 @@ const SEARCH_LABEL_BY_MEDIA_TYPE: Record<MediaTypeFilter, string> = {
   tv: 'Search a series'
 };
 
-const EMPTY_LANGUAGES: TmdbLanguage[] = [];
+const ENGLISH_LANGUAGE: TmdbLanguage = { iso_639_1: 'en', english_name: 'English', name: 'English' };
+
+/**
+ * Builds the language list used when TMDB's language endpoint is unavailable:
+ * always English, plus the client's own language derived from its locale. Each
+ * entry is shaped exactly like a TMDB language (2-letter `iso_639_1` + English
+ * and localized display names) so it can be sorted and selected like the real data.
+ */
+export const buildDefaultLanguages = (locale: string): TmdbLanguage[] => {
+  const isoCode = locale.split('-')[0].toLowerCase();
+
+  if (isoCode.length === 0 || isoCode === ENGLISH_LANGUAGE.iso_639_1) {
+    return [ENGLISH_LANGUAGE];
+  }
+
+  const englishNames = new Intl.DisplayNames(['en'], { type: 'language' });
+  const localizedNames = new Intl.DisplayNames([locale], { type: 'language' });
+
+  const clientLanguage: TmdbLanguage = {
+    iso_639_1: isoCode,
+    english_name: englishNames.of(isoCode) ?? isoCode,
+    name: localizedNames.of(isoCode) ?? isoCode
+  };
+
+  return [ENGLISH_LANGUAGE, clientLanguage];
+};
 
 const sortLanguages = (list: TmdbLanguage[]): TmdbLanguage[] =>
   [...list].filter((language) => language.english_name.length > 0).sort((a, b) => a.english_name.localeCompare(b.english_name));
@@ -71,7 +96,15 @@ export class SearchBar implements OnInit {
       mediaType: [DEFAULT_MEDIA_TYPE, [Validators.required]]
     });
 
-    this.languages = toSignal(this.searchService.getLanguages().pipe(map(sortLanguages)), { initialValue: EMPTY_LANGUAGES });
+    const defaultLanguages = sortLanguages(buildDefaultLanguages(navigator.language));
+
+    this.languages = toSignal(
+      this.searchService.getLanguages().pipe(
+        map(sortLanguages),
+        catchError(() => of(defaultLanguages))
+      ),
+      { initialValue: defaultLanguages }
+    );
     const mediaType = toSignal(this.form.controls.mediaType.valueChanges, { initialValue: this.form.controls.mediaType.value });
     this.searchLabel = computed(() => SEARCH_LABEL_BY_MEDIA_TYPE[mediaType()]);
   }

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Mock } from 'vitest';
 
 import { MaterialTesting } from '@testing';
@@ -90,6 +90,28 @@ describe('SearchBar', () => {
 
     expect(getLanguagesSpy).toHaveBeenCalledOnce();
     expect(options).toEqual(['English', 'French']);
+  });
+
+  it('should fall back to English and the client language when getLanguages fails', async () => {
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue('fr-FR');
+    getLanguagesSpy.mockReturnValue(throwError(() => new Error('boom')));
+
+    createComponent();
+
+    const options = await materialTesting.matFormField.getMatSelectOptions('Language');
+
+    expect(options).toEqual(['English', 'French']);
+  });
+
+  it('should fall back to English only when getLanguages fails and the client language is English', async () => {
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue('en-US');
+    getLanguagesSpy.mockReturnValue(throwError(() => new Error('boom')));
+
+    createComponent();
+
+    const options = await materialTesting.matFormField.getMatSelectOptions('Language');
+
+    expect(options).toEqual(['English']);
   });
 
   it('should render a media-type selector defaulting to All with options All, Movies, Series', async () => {
