@@ -191,6 +191,16 @@ describe('SearchBar', () => {
     expect(emitSpy).toHaveBeenCalledExactlyOnceWith(expected);
   });
 
+  it('should emit queryChanged as the user types in the search input', async () => {
+    createComponent();
+
+    const emitSpy = vi.spyOn(component.queryChanged, 'emit');
+
+    await materialTesting.matFormField.setMatInputValue('Search movies & series', 'matr');
+
+    expect(emitSpy).toHaveBeenCalledWith('matr');
+  });
+
   it('should re-emit searchRequested when the media type changes and the query is filled', async () => {
     createComponent();
 

@@ -79,6 +79,7 @@ export class SearchBar implements OnInit {
   public readonly initialMediaType = input<MediaTypeFilter>(DEFAULT_MEDIA_TYPE);
 
   public readonly searchRequested = output<SearchRequest>();
+  public readonly queryChanged = output<string>();
 
   protected readonly form;
   protected readonly languages;
@@ -122,6 +123,10 @@ export class SearchBar implements OnInit {
     merge(this.form.controls.language.valueChanges, this.form.controls.mediaType.valueChanges)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.emitSearch());
+
+    // Surface what the user is currently typing so the parent can tell them to
+    // submit while the query has not been searched yet.
+    this.form.controls.query.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((query) => this.queryChanged.emit(query));
   }
 
   protected onSubmit(): void {
