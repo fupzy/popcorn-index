@@ -10,5 +10,5 @@ public interface IReviewRepository
 
     Task<Review> Create(CreateReviewCommand command);
 
-    Task<Review?> Update(Guid id, UpdateReviewCommand command);
+    Task<Review?> Update(Guid id, Guid userId, UpdateReviewCommand command);
 }

@@ -9,6 +9,7 @@ Background:
         | f4d9d1fd-f3a5-4bcc-88d2-7e0074a08b6b | BobSmith | some_bob_smith_password_hash |
 
 Scenario: 1. Getting the defined users
+    Given I am authenticated as the user "8fcbb75f-83b4-40c1-a01a-59982dafb7f1"
     When I get all the defined users
     Then I receive a "OK" status
     And I receive the response
@@ -25,3 +26,7 @@ Scenario: 1. Getting the defined users
             }
         ]
         """
+
+Scenario: 2. Rejecting an unauthenticated caller
+    When I get all the defined users
+    Then I receive a "Unauthorized" status

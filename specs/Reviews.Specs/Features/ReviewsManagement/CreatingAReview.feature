@@ -8,10 +8,10 @@ Scenario: 1. Creating a movie review persists it
     And the GUID provider next ids are
         | Id                                   |
         | 11111111-1111-1111-1111-111111111111 |
+    And I am authenticated as the user "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
     When I create a review with the command
         """
         {
-            "userId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
             "mediaType": "Movie",
             "tmdbId": 550,
             "rating": 8,
@@ -23,11 +23,47 @@ Scenario: 1. Creating a movie review persists it
         | Id                                   | UserId                               | MediaType | TmdbId | Rating | Comment |
         | 11111111-1111-1111-1111-111111111111 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Movie     | 550    | 8      | Great   |
 
-Scenario Outline: 2. Rejecting an out-of-range rating
+Scenario: 2. Attributing the review to the authenticated user, whatever the body claims
+    Given the defined users
+        | Id                                   | Username | PasswordHash |
+        | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Alice    | hash         |
+        | bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb | Bob      | hash         |
+    And the GUID provider next ids are
+        | Id                                   |
+        | 11111111-1111-1111-1111-111111111111 |
+    And I am authenticated as the user "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
     When I create a review with the command
         """
         {
-            "userId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+            "userId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+            "mediaType": "Movie",
+            "tmdbId": 550,
+            "rating": 8,
+            "comment": "Great"
+        }
+        """
+    Then I receive a "OK" status
+    And the stored reviews are
+        | Id                                   | UserId                               | Username | MediaType | TmdbId |
+        | 11111111-1111-1111-1111-111111111111 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | Alice    | Movie     | 550    |
+
+Scenario: 3. Rejecting an unauthenticated creation
+    When I create a review with the command
+        """
+        {
+            "mediaType": "Movie",
+            "tmdbId": 550,
+            "rating": 8,
+            "comment": "Great"
+        }
+        """
+    Then I receive a "Unauthorized" status
+
+Scenario Outline: 4. Rejecting an out-of-range rating
+    Given I am authenticated as the user "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+    When I create a review with the command
+        """
+        {
             "mediaType": "Movie",
             "tmdbId": 550,
             "rating": <rating>
@@ -46,11 +82,11 @@ Scenario Outline: 2. Rejecting an out-of-range rating
         | -1     |
         | 11     |
 
-Scenario: 3. Rejecting season reviews on a movie
+Scenario: 5. Rejecting season reviews on a movie
+    Given I am authenticated as the user "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
     When I create a review with the command
         """
         {
-            "userId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
             "mediaType": "Movie",
             "tmdbId": 550,
             "rating": 8,
@@ -67,11 +103,11 @@ Scenario: 3. Rejecting season reviews on a movie
         }
         """
 
-Scenario: 4. Rejecting duplicate season numbers
+Scenario: 6. Rejecting duplicate season numbers
+    Given I am authenticated as the user "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
     When I create a review with the command
         """
         {
-            "userId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
             "mediaType": "Series",
             "tmdbId": 1399,
             "rating": 8,

@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Users.Domain;
 
@@ -8,6 +9,7 @@ namespace Users.Controllers;
 [ApiVersion(1.0)]
 [Route("api/v{version:apiVersion}/users")]
 [ApiExplorerSettings(GroupName = "v1")]
+[Authorize]
 public sealed class UsersController(IUserRepository userRepository) : ControllerBase
 {
     [HttpGet]

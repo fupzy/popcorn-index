@@ -10,6 +10,6 @@ internal sealed class ServicesRegistrator : IServicesRegistrator
 {
     public IServiceCollection Add(IServiceCollection services, IConfiguration configuration)
         => services
-            .AddScoped<IValidator<CreateReviewCommand>, CreateReviewCommandValidator>()
+            .AddScoped<IValidator<CreateReviewRequest>, CreateReviewRequestValidator>()
             .AddScoped<IValidator<UpdateReviewCommand>, UpdateReviewCommandValidator>();
 }

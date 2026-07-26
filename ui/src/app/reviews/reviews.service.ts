@@ -24,7 +24,6 @@ export interface Review {
 }
 
 export interface CreateReviewCommand {
-  readonly userId: string;
   readonly mediaType: ReviewMediaType;
   readonly tmdbId: number;
   readonly rating: number;

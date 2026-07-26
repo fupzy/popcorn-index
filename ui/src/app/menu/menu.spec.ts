@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { MaterialTesting, provideRoutingTesting } from '@testing';
+import { MaterialTesting, provideRoutingTesting, unsignedJwtExpiringIn } from '@testing';
 
 import { AUTH_TOKEN_STORAGE_KEY, AuthenticationService } from '../authentication/authentication.service';
 
@@ -94,7 +94,7 @@ describe('Menu', () => {
 
   describe('when a token is stored', () => {
     beforeEach(() => {
-      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, 'jwt-token');
+      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, unsignedJwtExpiringIn(3600));
       createFixture();
     });
 
