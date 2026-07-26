@@ -1,10 +1,12 @@
 using System.Text;
 using Authentication.Application;
+using Authentication.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Users.Domain;
 using Utilities;
 using Utilities.Extensions;
@@ -38,6 +40,19 @@ internal sealed class ServicesRegistrator : IServicesRegistrator
             });
 
         services.AddAuthorization();
+
+        services.ConfigureSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                Description = "Paste the raw token returned by /authentication/login. The \"Bearer \" prefix is added for you."
+            });
+
+            options.DocumentFilter<AuthorizedOperationFilter>();
+        });
 
         return services
             .AddScoped<IPasswordHasher<User>, PasswordHasher<User>>()
