@@ -43,6 +43,15 @@ export class SeriesDetail implements OnInit {
 
     return getPosterUrl(seriesDetails?.poster_path, PosterWidth.width500);
   });
+  protected readonly seasons = computed<TmdbSeason[]>(() => {
+    const seriesDetails = this.seriesDetails();
+
+    if (!seriesDetails) {
+      return [];
+    }
+
+    return seriesDetails.seasons.filter((season) => season.episode_count > 0);
+  });
   protected readonly isLoading = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 

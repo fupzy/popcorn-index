@@ -10,13 +10,20 @@ import { SearchResult } from './search-result';
 
 @Component({
   imports: [SearchResult],
-  template: ` <app-search-result [results]="results()" [isLoading]="isLoading()" [errorMessage]="errorMessage()"></app-search-result> `,
+  template: `
+    <app-search-result
+      [results]="results()"
+      [isLoading]="isLoading()"
+      [errorMessage]="errorMessage()"
+      [emptyMessage]="emptyMessage()"></app-search-result>
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   public readonly results = signal<TmdbMedia[]>([]);
   public readonly isLoading = signal(false);
   public readonly errorMessage = signal<string | null>(null);
+  public readonly emptyMessage = signal<string>('No results yet — start typing a title.');
 }
 
 const mockMovie: TmdbMedia = {
@@ -65,6 +72,15 @@ describe('SearchResult', () => {
     const text = fixture.debugElement.nativeElement.textContent;
 
     expect(text).toContain('No results yet');
+  });
+
+  it('should display the provided emptyMessage in the empty state', () => {
+    host.emptyMessage.set('Press the search button to run your search.');
+    fixture.detectChanges();
+
+    const text = fixture.debugElement.nativeElement.textContent;
+
+    expect(text).toContain('Press the search button to run your search.');
   });
 
   it('should render one list item per result with title, type label and date', () => {

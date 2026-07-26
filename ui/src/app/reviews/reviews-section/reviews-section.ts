@@ -84,11 +84,10 @@ export class ReviewsSection implements OnInit {
     this.sortOrder.set(order);
   }
 
-  protected openForm(userId: string): void {
+  protected openForm(): void {
     const data: ReviewFormDialogData = {
       mediaType: this.mediaType(),
       tmdbId: this.tmdbId(),
-      userId,
       seasons: this.seasons(),
       existingReview: this.ownReview()
     };

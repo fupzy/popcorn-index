@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Users.Domain;
 
 namespace Users.Infrastructure;
 
 internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
 {
-    public async Task<User> Create(User user)
+    public async Task<User> Create(UserWithCredentials user)
     {
         var userDao = new UserDao
         {
@@ -25,24 +25,30 @@ internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
         var query = dbContext.Users
             .AsNoTracking()
             .OrderBy(u => u.Username)
-            .Select(u => u.ToEntity());
+            .Select(u => new User(u.Username));
 
         var items = query.AsAsyncEnumerable();
 
         return items;
     }
 
-    public async Task<User?> GetByUsername(string username)
-    {
-        var userDao = await dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
-
-        return userDao?.ToEntity();
-    }
-
     public async Task<User?> GetById(Guid id)
     {
-        var userDao = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+        var user = await dbContext.Users
+            .AsNoTracking()
+            .Where(u => u.Id == id)
+            .Select(u => new User(u.Username))
+            .FirstOrDefaultAsync();
 
-        return userDao?.ToEntity();
+        return user;
+    }
+
+    public async Task<UserWithCredentials?> GetUserCredentials(string username)
+    {
+        var userDao = await dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Username == username);
+
+        return userDao?.ToUserWithCredentials();
     }
 }

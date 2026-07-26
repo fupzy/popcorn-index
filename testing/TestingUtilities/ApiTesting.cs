@@ -10,6 +10,8 @@ public sealed class ApiTesting(ServiceTestingSteps serviceTestingSteps)
 
     public HttpResponseMessage? ResponseMessage { get; set; }
 
+    public void AddHeader(string name, string? value) => this.headers.Add(new HttpRequestHeader(name, value));
+
     public Task Get(string uri) => this.SendRequest(uri, HttpMethod.Get);
 
     public Task Delete(string uri) => this.SendRequest(uri, HttpMethod.Delete);

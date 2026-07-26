@@ -1,12 +1,12 @@
-﻿namespace Users.Domain;
+namespace Users.Domain;
 
 public interface IUserRepository
 {
     IAsyncEnumerable<User> GetAll();
 
-    Task<User?> GetByUsername(string username);
-
     Task<User?> GetById(Guid id);
 
-    Task<User> Create(User user);
+    Task<UserWithCredentials?> GetUserCredentials(string username);
+
+    Task<User> Create(UserWithCredentials user);
 }

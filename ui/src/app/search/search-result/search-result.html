@@ -1,6 +1,6 @@
 <app-loading-shell [isLoading]="isLoading()" [errorMessage]="errorMessage()">
   @if (!hasResults()) {
-    <div class="flex flex-1 items-center justify-center opacity-60">No results yet — start typing a movie title.</div>
+    <div class="flex flex-1 items-center justify-center opacity-60">{{ emptyMessage() }}</div>
   } @else {
     <ul class="grid grid-cols-2 gap-4 p-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full">
       @for (media of results(); track media.mediaType + '-' + media.id) {

@@ -97,7 +97,9 @@ public sealed class AppService
         .UseCors(CorsPolicy)
         .UseHttpLogging()
         .UseExceptionHandler()
-        .UseStatusCodePages();
+        .UseStatusCodePages()
+        .UseAuthentication()
+        .UseAuthorization();
 
         this.WebApplication.MapControllers();
 

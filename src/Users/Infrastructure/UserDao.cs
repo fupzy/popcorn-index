@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Users.Domain;
 
 namespace Users.Infrastructure;
@@ -29,6 +29,11 @@ internal sealed class UserDao
 
     public User ToEntity()
     {
-        return new User(this.Id, this.Username, this.PasswordHash);
+        return new User(this.Username);
+    }
+
+    public UserWithCredentials ToUserWithCredentials()
+    {
+        return new UserWithCredentials(this.Id, this.Username, this.PasswordHash);
     }
 }

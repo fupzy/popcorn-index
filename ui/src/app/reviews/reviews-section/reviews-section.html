@@ -12,8 +12,8 @@
       }
     </div>
 
-    @if (currentUserId(); as userId) {
-      <button mat-flat-button color="primary" type="button" (click)="openForm(userId)">
+    @if (currentUserId()) {
+      <button mat-flat-button color="primary" type="button" (click)="openForm()">
         <mat-icon>{{ ownReview() ? 'edit' : 'rate_review' }}</mat-icon>
         <span>{{ ownReview() ? 'Edit my review' : 'Write a review' }}</span>
       </button>
@@ -28,7 +28,7 @@
     <p class="text-sm text-error" role="alert">{{ message }}</p>
   } @else {
     @if (ownReview(); as own) {
-      <app-review-card [review]="own" [showOwnerActions]="true" [seasons]="seasons()" (editRequested)="openForm(own.userId)" />
+      <app-review-card [review]="own" [showOwnerActions]="true" [seasons]="seasons()" (editRequested)="openForm()" />
     }
 
     @if (otherReviews().length > 0) {

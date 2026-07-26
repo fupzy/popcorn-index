@@ -9,25 +9,24 @@ Background:
         | f4d9d1fd-f3a5-4bcc-88d2-7e0074a08b6b | BobSmith | some_bob_smith_password_hash |
 
 Scenario: 1. Getting the defined users
+    Given I am authenticated as the user "8fcbb75f-83b4-40c1-a01a-59982dafb7f1"
     When I get all the defined users
     Then I receive a "OK" status
     And I receive the response
         """
         [
             {
-                "id": "f4d9d1fd-f3a5-4bcc-88d2-7e0074a08b6b",
-                "username": "BobSmith",
-                "passwordHash": "some_bob_smith_password_hash"
+                "username": "BobSmith"
             },
             {
-                "id": "1279ae3a-7a4a-4ce1-aa3f-0b3427a03368",
-                "username": "Danny",
-                "passwordHash": "some_danny_password_hash"
+                "username": "Danny"
             },
             {
-                "id": "8fcbb75f-83b4-40c1-a01a-59982dafb7f1",
-                "username": "JohnDoe",
-                "passwordHash": "some_john_doe_password_hash"
+                "username": "JohnDoe"
             }
         ]
         """
+
+Scenario: 2. Rejecting an unauthenticated caller
+    When I get all the defined users
+    Then I receive a "Unauthorized" status

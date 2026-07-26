@@ -27,7 +27,6 @@ const existingReview: Review = {
 const createData: ReviewFormDialogData = {
   mediaType: 'Movie',
   tmdbId: 42,
-  userId: 'u1',
   seasons: [],
   existingReview: null
 };
@@ -35,7 +34,6 @@ const createData: ReviewFormDialogData = {
 const editData: ReviewFormDialogData = {
   mediaType: 'Series',
   tmdbId: 99,
-  userId: 'u1',
   seasons: [
     { seasonNumber: 1, name: 'Season 1' },
     { seasonNumber: 2, name: 'Season 2' }
@@ -118,7 +116,6 @@ describe('ReviewFormDialog', () => {
     await materialTesting.matButton.click(/Publish/);
 
     expect(reviewsService.createReview).toHaveBeenCalledExactlyOnceWith({
-      userId: 'u1',
       mediaType: 'Movie',
       tmdbId: 42,
       rating: 10,

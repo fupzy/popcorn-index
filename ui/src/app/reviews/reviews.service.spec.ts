@@ -69,7 +69,6 @@ describe('ReviewsService', () => {
 
   it('should POST to create a review', () => {
     const command: CreateReviewCommand = {
-      userId: mockReview.userId,
       mediaType: 'Movie',
       tmdbId: 42,
       rating: 5,
