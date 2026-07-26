@@ -4,7 +4,6 @@ using System.Text;
 using Authentication.Domain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Users.Domain;
 using Utilities.Extensions;
 
 namespace Authentication.Application;
@@ -18,7 +17,7 @@ public sealed class JwtService(IConfiguration configuration) : IJwtService
         JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
     }
 
-    public string GenerateToken(User user)
+    public string GenerateToken(AuthenticatedUser user)
     {
         var claims = new[]
         {
