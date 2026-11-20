@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "PopcornIndex (local development)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "[dotnet] prepare launch",
+      "program": "${workspaceFolder}/src/PopcornIndex/bin/Debug/net10.0/PopcornIndex.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/PopcornIndex/bin/Debug/net10.0",
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "env": {
+        "ENV_FILE": "${workspaceFolder}/.env",
+        "APPSETTINGS_FOLDER": "${workspaceFolder}/appsettings"
+      }
+    }
+  ]
+}
