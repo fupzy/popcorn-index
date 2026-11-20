@@ -175,7 +175,7 @@ Or via `Paramètres Windows > Système > Informations système > Paramètres sys
 
 ### 2. Database
 
-Connection defaults: database `popcorn`, user `popcorn`, password `popcorn`, port `5432`.
+Connection defaults: database `popcorn`, user `popcorn`, password `popcorn`, port `5434`.
 
 ```bash
 # Start / stop PostgreSQL (run from the repo root)

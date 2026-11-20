@@ -12,7 +12,7 @@ nginx reverse proxy terminates TLS and forwards the domain to that port.
                                      ├─ /popcorn-index/*  →  api:8080  (prefix stripped)
                                      └─ /                 →  ui:80     (Angular SPA)
                                           │
-                                   [ api: .NET 10 ]  ──►  db:5432  (EF migrations at boot)
+                                   [ api: .NET 10 ]  ──►  db:5434  (EF migrations at boot)
                                    [ db: postgres 15 ]    pgdata volume, popcorn_index schema
 ```
 
@@ -20,13 +20,13 @@ nginx reverse proxy terminates TLS and forwards the domain to that port.
 - The browser calls the API with a relative path `/popcorn-index/*`; the `proxy` container strips
   the prefix (the API serves `api/v{n}/...`). The host therefore has no `/popcorn-index` rule to manage.
 
-| File                                | Role                                            |
-| ----------------------------------- | ----------------------------------------------- |
-| `docker-compose.yml`                | Orchestrates `db`, `api`, `ui`, `proxy`         |
-| `proxy.conf`                        | nginx for the `proxy` container (API vs UI routing) |
-| `api.Dockerfile` / `ui.Dockerfile`  | API (.NET 10) and UI (Angular → nginx) images   |
-| `nginx.conf`                        | nginx for the `ui` container (SPA only)         |
-| `.env.example`                      | Environment variable template                   |
+| File                               | Role                                                |
+| ---------------------------------- | --------------------------------------------------- |
+| `docker-compose.yml`               | Orchestrates `db`, `api`, `ui`, `proxy`             |
+| `proxy.conf`                       | nginx for the `proxy` container (API vs UI routing) |
+| `api.Dockerfile` / `ui.Dockerfile` | API (.NET 10) and UI (Angular → nginx) images       |
+| `nginx.conf`                       | nginx for the `ui` container (SPA only)             |
+| `.env.example`                     | Environment variable template                       |
 
 ## Environment variables
 

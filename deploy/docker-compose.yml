@@ -20,7 +20,11 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-popcorn} -d ${POSTGRES_DB:-popcorn}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-popcorn} -d ${POSTGRES_DB:-popcorn}",
+        ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -36,7 +40,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
+      POSTGRES_PORT: 5434
       POSTGRES_DB: ${POSTGRES_DB:-popcorn}
       POSTGRES_USER: ${POSTGRES_USER:-popcorn}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-popcorn}
