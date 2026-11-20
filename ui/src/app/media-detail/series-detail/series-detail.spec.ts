@@ -8,7 +8,7 @@ import { Mock } from 'vitest';
 import { LoadingShell } from '@shared';
 
 import { ReviewsSection, ReviewsService } from '../../reviews';
-import { MediaDetailService, TmdbSeasonDetails, TmdbSeriesDetails } from '../media-detail.service';
+import { MediaDetailService, TmdbSeason, TmdbSeasonDetails, TmdbSeriesDetails } from '../media-detail.service';
 
 import { SeasonDetail } from './season-detail/season-detail';
 import { SeriesDetail } from './series-detail';
@@ -111,7 +111,6 @@ describe('SeriesDetail', () => {
     expect(text).toContain('Winter is coming.');
     expect(text).toContain('2011-04-17');
     expect(text).toContain('Seasons');
-    expect(text).toContain('8');
     expect(text).toContain('Drama');
     expect(text).toContain('Sci-Fi & Fantasy');
   });
@@ -168,6 +167,63 @@ describe('SeriesDetail', () => {
     expect(secondTitle).toEqual('Season 2');
     expect(secondDescription).toContain('8.7 / 10');
     expect(secondDescription).not.toContain('null');
+  });
+
+  it('should display the number of non-empty seasons in the Seasons row', () => {
+    const emptySeason: TmdbSeason = {
+      id: 3626,
+      season_number: 3,
+      name: 'Season 3',
+      overview: '',
+      poster_path: null,
+      air_date: null,
+      episode_count: 0,
+      vote_average: 0
+    };
+
+    getSeriesDetailsSpy.mockReturnValue(of({ ...seriesDetails, number_of_seasons: 42, seasons: [...seriesDetails.seasons, emptySeason] }));
+
+    createComponent('1399');
+
+    const terms = fixture.debugElement.queryAll(By.css('dl dt')).map((dt) => dt.nativeElement.textContent.trim());
+    const definitions = fixture.debugElement.queryAll(By.css('dl dd')).map((dd) => dd.nativeElement.textContent.trim());
+    const seasonsIndex = terms.indexOf('Seasons');
+
+    expect(definitions[seasonsIndex]).toEqual('2');
+  });
+
+  it('should not render a panel for seasons that have no episodes', async () => {
+    const emptySeason: TmdbSeason = {
+      id: 3626,
+      season_number: 3,
+      name: 'Season 3',
+      overview: '',
+      poster_path: null,
+      air_date: null,
+      episode_count: 0,
+      vote_average: 0
+    };
+
+    getSeriesDetailsSpy.mockReturnValue(of({ ...seriesDetails, seasons: [...seriesDetails.seasons, emptySeason] }));
+
+    createComponent('1399');
+
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    const panels = await loader.getAllHarnesses(MatExpansionPanelHarness);
+    const titles = await Promise.all(panels.map((panel) => panel.getTitle()));
+
+    expect(titles).toEqual(['Season 1', 'Season 2']);
+  });
+
+  it('should not render the seasons section when every season is empty', async () => {
+    getSeriesDetailsSpy.mockReturnValue(of({ ...seriesDetails, seasons: seriesDetails.seasons.map((season) => ({ ...season, episode_count: 0 })) }));
+
+    createComponent('1399');
+
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    const accordion = await loader.getHarnessOrNull(MatAccordionHarness);
+
+    expect(accordion).toBeNull();
   });
 
   it('should not render the seasons section when seasons is empty', async () => {

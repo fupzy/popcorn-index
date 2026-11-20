@@ -178,7 +178,6 @@ describe('ReviewsSection', () => {
     expect(data).toEqual({
       mediaType: 'Movie',
       tmdbId: 42,
-      userId: 'u-new',
       seasons: [],
       existingReview: null
     });

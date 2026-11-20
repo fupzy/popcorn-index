@@ -12,7 +12,6 @@ import { MAX_RATING_VALUE, RatingStars } from '../rating-stars/rating-stars';
 export interface ReviewFormDialogData {
   readonly mediaType: ReviewMediaType;
   readonly tmdbId: number;
-  readonly userId: string;
   readonly seasons: ReviewSeason[];
   readonly existingReview: Review | null;
 }
@@ -115,7 +114,6 @@ export class ReviewFormDialog {
     const request$ =
       existing === null
         ? this.reviewsService.createReview({
-            userId: this.data.userId,
             mediaType: this.data.mediaType,
             tmdbId: this.data.tmdbId,
             rating,

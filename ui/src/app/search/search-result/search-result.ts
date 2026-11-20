@@ -18,6 +18,7 @@ export class SearchResult {
   public readonly results = input<TmdbMedia[]>([]);
   public readonly isLoading = input<boolean>(false);
   public readonly errorMessage = input<string | null>(null);
+  public readonly emptyMessage = input<string>('No results yet — start typing a title.');
 
   protected readonly hasResults = computed(() => this.results().length > 0);
 

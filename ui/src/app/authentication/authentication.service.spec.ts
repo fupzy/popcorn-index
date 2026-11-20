@@ -3,26 +3,11 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { provideRoutingTesting } from '@testing';
+import { TEST_USER_ID, provideRoutingTesting, unsignedJwtExpiringIn, unsignedJwtWithClaims } from '@testing';
 
 import { AUTH_TOKEN_STORAGE_KEY, AuthenticationService } from './authentication.service';
 
-/**
- * Builds a syntactically valid (but unsigned) JWT embedding the given
- * `exp` claim in its payload, for tests that exercise expiration logic.
- */
-const makeJwtWithExpiration = (expSeconds: number): string => {
-  const header = btoa(JSON.stringify({ alg: 'none', typ: 'JWT' }));
-  const payload = btoa(JSON.stringify({ exp: expSeconds }));
-  return `${header}.${payload}.signature`;
-};
-
-/**
- * Builds a JWT whose `exp` claim is `seconds` away from the current
- * clock — positive for a token that will expire in the future,
- * negative for a token that is already expired.
- */
-const makeTokenExpiringIn = (seconds: number): string => makeJwtWithExpiration(Math.floor(Date.now() / 1000) + seconds);
+const validToken = unsignedJwtWithClaims({ sub: TEST_USER_ID, exp: 4102444800 });
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
@@ -108,9 +93,9 @@ describe('AuthenticationService', () => {
       service.login('alice', 'secret-pw').subscribe({ next, complete });
 
       const request = httpTesting.expectOne('/popcorn-index/api/v1/authentication/login');
-      request.flush({ token: 'jwt-token' });
+      request.flush({ token: validToken });
 
-      expect(next).toHaveBeenCalledWith({ token: 'jwt-token' });
+      expect(next).toHaveBeenCalledWith({ token: validToken });
       expect(complete).toHaveBeenCalledTimes(1);
     });
 
@@ -134,9 +119,9 @@ describe('AuthenticationService', () => {
       service.login('alice', 'secret-pw').subscribe();
 
       const request = httpTesting.expectOne('/popcorn-index/api/v1/authentication/login');
-      request.flush({ token: 'jwt-token' });
+      request.flush({ token: validToken });
 
-      expect(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toEqual('jwt-token');
+      expect(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toEqual(validToken);
     });
 
     it('should not persist a token in localStorage when the server returns an error', () => {
@@ -152,9 +137,9 @@ describe('AuthenticationService', () => {
   describe('getToken', () => {
     it('should return the token stored by a successful login', () => {
       service.login('alice', 'secret-pw').subscribe();
-      httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: 'jwt-token' });
+      httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: validToken });
 
-      expect(service.getToken()).toEqual('jwt-token');
+      expect(service.getToken()).toEqual(validToken);
     });
 
     it('should return null when no token has been stored', () => {
@@ -169,7 +154,7 @@ describe('AuthenticationService', () => {
 
     it('should be true once a login succeeds and false again after logout', () => {
       service.login('alice', 'secret-pw').subscribe();
-      httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: 'jwt-token' });
+      httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: validToken });
 
       expect(service.isAuthenticated()).toEqual(true);
 
@@ -181,7 +166,7 @@ describe('AuthenticationService', () => {
 
   describe('logout', () => {
     it('should clear the persisted token', () => {
-      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, 'jwt-token');
+      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, validToken);
 
       service.logout();
 
@@ -192,7 +177,7 @@ describe('AuthenticationService', () => {
 
   describe('initial state', () => {
     it('should hydrate the token from localStorage when the service is constructed', () => {
-      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, 'persisted-token');
+      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, validToken);
 
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
@@ -202,12 +187,12 @@ describe('AuthenticationService', () => {
 
       const freshService = TestBed.inject(AuthenticationService);
 
-      expect(freshService.getToken()).toEqual('persisted-token');
+      expect(freshService.getToken()).toEqual(validToken);
       expect(freshService.isAuthenticated()).toEqual(true);
     });
 
     it('should discard a persisted token that is already expired', () => {
-      const expiredToken = makeTokenExpiringIn(-60);
+      const expiredToken = unsignedJwtExpiringIn(-60);
       localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, expiredToken);
 
       TestBed.resetTestingModule();
@@ -223,21 +208,44 @@ describe('AuthenticationService', () => {
     });
   });
 
+  describe('token acceptance', () => {
+    [
+      { description: 'is not a three-segment JWT', token: 'toto' },
+      { description: 'has a payload that does not decode to valid JSON', token: `header.${btoa('not-json')}.signature` },
+      { description: 'carries no exp claim', token: unsignedJwtWithClaims({ sub: TEST_USER_ID }) },
+      { description: 'carries no sub claim', token: unsignedJwtWithClaims({ exp: 4102444800 }) },
+      { description: 'is already expired', token: unsignedJwtExpiringIn(-60) }
+    ].forEach(({ description, token }) => {
+      it(`should reject a token that ${description}`, () => {
+        service.login('alice', 'secret-pw').subscribe();
+        httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token });
+
+        expect(service.isAuthenticated()).toEqual(false);
+        expect(service.getToken()).toBeNull();
+        expect(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toBeNull();
+      });
+    });
+
+    it('should end the current session when a rejected token is adopted', () => {
+      service.login('alice', 'secret-pw').subscribe();
+      httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: validToken });
+
+      service.login('alice', 'secret-pw').subscribe();
+      httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: 'toto' });
+
+      expect(service.isAuthenticated()).toEqual(false);
+      expect(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toBeNull();
+    });
+  });
+
   describe('tokenExpiresAt', () => {
     it('should be null when no token is stored', () => {
       expect(service.tokenExpiresAt()).toBeNull();
     });
 
-    it('should be null for a token without an exp claim', () => {
-      service.login('alice', 'secret-pw').subscribe();
-      httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: 'opaque-token' });
-
-      expect(service.tokenExpiresAt()).toBeNull();
-    });
-
     it('should expose the exp claim as a Date for a valid JWT', () => {
       const expSeconds = Math.floor(Date.now() / 1000) + 3600;
-      const token = makeJwtWithExpiration(expSeconds);
+      const token = unsignedJwtWithClaims({ sub: TEST_USER_ID, exp: expSeconds });
 
       service.login('alice', 'secret-pw').subscribe();
       httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token });
@@ -246,23 +254,13 @@ describe('AuthenticationService', () => {
     });
 
     it('should become null again after logout', () => {
-      const token = makeTokenExpiringIn(3600);
+      const token = unsignedJwtExpiringIn(3600);
 
       service.login('alice', 'secret-pw').subscribe();
       httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token });
 
       service.logout();
 
-      expect(service.tokenExpiresAt()).toBeNull();
-    });
-
-    it('should be null when the payload segment does not decode to valid JSON', () => {
-      const malformedPayloadToken = `header.${btoa('not-json')}.signature`;
-
-      service.login('alice', 'secret-pw').subscribe();
-      httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: malformedPayloadToken });
-
-      expect(service.isAuthenticated()).toEqual(true);
       expect(service.tokenExpiresAt()).toBeNull();
     });
   });
@@ -272,7 +270,7 @@ describe('AuthenticationService', () => {
       vi.useFakeTimers({ shouldAdvanceTime: false });
       const router = TestBed.inject(Router);
       const navigateSpy = vi.spyOn(router, 'navigate');
-      const token = makeTokenExpiringIn(60);
+      const token = unsignedJwtExpiringIn(60);
 
       service.login('alice', 'secret-pw').subscribe();
       httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token });
@@ -286,21 +284,10 @@ describe('AuthenticationService', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['/login']);
     });
 
-    it('should not schedule auto-logout for a token without an exp claim', () => {
-      vi.useFakeTimers({ shouldAdvanceTime: false });
-
-      service.login('alice', 'secret-pw').subscribe();
-      httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: 'opaque-token' });
-
-      vi.advanceTimersByTime(24 * 60 * 60 * 1000);
-
-      expect(service.isAuthenticated()).toEqual(true);
-    });
-
     it('should cancel the previous timer when a new token is adopted', () => {
       vi.useFakeTimers({ shouldAdvanceTime: false });
-      const shortLivedToken = makeTokenExpiringIn(60);
-      const longLivedToken = makeTokenExpiringIn(3600);
+      const shortLivedToken = unsignedJwtExpiringIn(60);
+      const longLivedToken = unsignedJwtExpiringIn(3600);
 
       service.login('alice', 'secret-pw').subscribe();
       httpTesting.expectOne('/popcorn-index/api/v1/authentication/login').flush({ token: shortLivedToken });
@@ -315,7 +302,7 @@ describe('AuthenticationService', () => {
 
     it('should cancel the scheduled timer when logout is called manually', () => {
       vi.useFakeTimers({ shouldAdvanceTime: false });
-      const token = makeTokenExpiringIn(60);
+      const token = unsignedJwtExpiringIn(60);
       const logoutSpy = vi.spyOn(service, 'logout');
 
       service.login('alice', 'secret-pw').subscribe();

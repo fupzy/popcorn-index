@@ -50,6 +50,11 @@ describe('Search', () => {
     fixture.detectChanges();
   };
 
+  const triggerQueryChange = (query: string): void => {
+    fixture.debugElement.query(By.css('app-search-bar')).triggerEventHandler('queryChanged', query);
+    fixture.detectChanges();
+  };
+
   const getSearchResult = (): SearchResult => fixture.debugElement.query(By.directive(SearchResult)).componentInstance as SearchResult;
 
   beforeEach(() => {
@@ -125,6 +130,28 @@ describe('Search', () => {
     expect(searchBar.initialQuery()).toEqual('matrix');
     expect(searchBar.initialLanguage()).toEqual('fr');
     expect(searchBar.initialMediaType()).toEqual('all');
+  });
+
+  it('should prompt the user to start typing while the query is empty and nothing has been searched', () => {
+    const searchResult = getSearchResult();
+
+    expect(searchResult.emptyMessage()).toEqual('No results yet — start typing a title.');
+  });
+
+  it('should prompt the user to submit while they are typing a query that has not been searched', () => {
+    triggerQueryChange('matrix');
+
+    const searchResult = getSearchResult();
+    expect(searchResult.emptyMessage()).toEqual('Press the search button to run your search.');
+  });
+
+  it('should report no results found once the typed query has been searched with an empty response', () => {
+    triggerQueryChange('matrix');
+
+    triggerSearch(matrixSearch);
+
+    const searchResult = getSearchResult();
+    expect(searchResult.emptyMessage()).toEqual('No results found for "matrix".');
   });
 
   it('should retain the previous results in the SearchStateService after the component is destroyed', () => {

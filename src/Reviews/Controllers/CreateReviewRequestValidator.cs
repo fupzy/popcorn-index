@@ -3,14 +3,10 @@ using Reviews.Domain;
 
 namespace Reviews.Controllers;
 
-public sealed class CreateReviewCommandValidator : ReviewCommandValidator<CreateReviewCommand>
+public sealed class CreateReviewRequestValidator : ReviewCommandValidator<CreateReviewRequest>
 {
-    public CreateReviewCommandValidator()
+    public CreateReviewRequestValidator()
     {
-        this.RuleFor(x => x.UserId)
-            .NotEmpty()
-            .WithMessage("UserId is required");
-
         this.RuleFor(x => x.MediaType)
             .IsInEnum()
             .WithMessage("MediaType must be Movie or Series");

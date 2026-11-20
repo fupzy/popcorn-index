@@ -23,7 +23,7 @@
           <dt class="font-medium opacity-70">TMDB rating</dt>
           <dd>{{ series.vote_average }} / 10</dd>
           <dt class="font-medium opacity-70">Seasons</dt>
-          <dd>{{ series.number_of_seasons }}</dd>
+          <dd>{{ seasons().length }}</dd>
           @if (series.genres.length > 0) {
             <dt class="font-medium opacity-70">Genres</dt>
             <dd>
@@ -41,11 +41,11 @@
         }
       </div>
     </article>
-    @if (series.seasons.length > 0) {
+    @if (seasons().length > 0) {
       <section class="mt-6 flex flex-col gap-2">
         <h2 class="text-lg font-semibold">Seasons</h2>
         <mat-accordion>
-          @for (season of series.seasons; track season.id) {
+          @for (season of seasons(); track season.id) {
             <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>{{ season.name }}</mat-panel-title>
@@ -64,6 +64,6 @@
         </mat-accordion>
       </section>
     }
-    <app-reviews-section mediaType="Series" [tmdbId]="series.id" [seasons]="toReviewSeasons(series.seasons)" />
+    <app-reviews-section mediaType="Series" [tmdbId]="series.id" [seasons]="toReviewSeasons(seasons())" />
   }
 </app-loading-shell>

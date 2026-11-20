@@ -62,7 +62,8 @@ export class AuthenticationService {
   public readonly token: Signal<string | null>;
 
   /**
-   * Reactive flag indicating whether a token is currently stored.
+   * Reactive flag indicating whether a structurally valid, unexpired token is
+   * currently stored.
    */
   public readonly isAuthenticated: Signal<boolean>;
 
@@ -164,9 +165,13 @@ export class AuthenticationService {
   }
 
   /**
-   * Adopts the given token: stores it, publishes it to the signal,
-   * and schedules auto-logout based on its `exp` claim. Already-expired
-   * tokens are rejected and clear any prior session.
+   * Adopts the given token: stores it, publishes it to the signal, and schedules
+   * auto-logout based on its `exp` claim.
+   *
+   * A token is rejected — and any prior session cleared — unless it is a decodable
+   * JWT carrying both a `sub` and a future `exp`. That keeps an arbitrary string
+   * dropped into `localStorage` from passing for a session, though it says nothing
+   * about the signature, which only the backend can verify.
    *
    * @param token Raw JWT string to adopt.
    * @param persist Whether to write the token back to `localStorage`.
@@ -174,9 +179,15 @@ export class AuthenticationService {
    */
   private applyToken(token: string, persist: boolean): void {
     const payload = decodeJwtPayload(token);
-    const expiresAtMs = payload?.exp != null ? payload.exp * 1000 : null;
 
-    if (expiresAtMs !== null && expiresAtMs <= Date.now()) {
+    if (payload?.exp == null || payload.sub == null) {
+      this.logout();
+      return;
+    }
+
+    const expiresAtMs = payload.exp * 1000;
+
+    if (expiresAtMs <= Date.now()) {
       this.logout();
       return;
     }
@@ -188,11 +199,8 @@ export class AuthenticationService {
     this.scheduleAutoLogout(expiresAtMs);
   }
 
-  private scheduleAutoLogout(expiresAtMs: number | null): void {
+  private scheduleAutoLogout(expiresAtMs: number): void {
     this.clearAutoLogoutTimer();
-    if (expiresAtMs === null) {
-      return;
-    }
 
     const delay = expiresAtMs - Date.now();
     console.info(`Token expires in ${Math.round(delay / 1000)} seconds`);

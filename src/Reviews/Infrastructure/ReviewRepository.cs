@@ -75,11 +75,11 @@ internal sealed class ReviewRepository(ReviewsDbContext dbContext, IUserReposito
         return dao.ToEntity();
     }
 
-    public async Task<Review?> Update(Guid id, UpdateReviewCommand command)
+    public async Task<Review?> Update(Guid id, Guid userId, UpdateReviewCommand command)
     {
         var existing = await dbContext.Reviews
             .Include(r => r.Seasons)
-            .FirstOrDefaultAsync(r => r.Id == id);
+            .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
 
         if (existing is null)
             return null;

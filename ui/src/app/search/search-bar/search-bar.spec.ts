@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Mock } from 'vitest';
 
 import { MaterialTesting } from '@testing';
@@ -92,6 +92,28 @@ describe('SearchBar', () => {
     expect(options).toEqual(['English', 'French']);
   });
 
+  it('should fall back to English and the client language when getLanguages fails', async () => {
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue('fr-FR');
+    getLanguagesSpy.mockReturnValue(throwError(() => new Error('boom')));
+
+    createComponent();
+
+    const options = await materialTesting.matFormField.getMatSelectOptions('Language');
+
+    expect(options).toEqual(['English', 'French']);
+  });
+
+  it('should fall back to English only when getLanguages fails and the client language is English', async () => {
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue('en-US');
+    getLanguagesSpy.mockReturnValue(throwError(() => new Error('boom')));
+
+    createComponent();
+
+    const options = await materialTesting.matFormField.getMatSelectOptions('Language');
+
+    expect(options).toEqual(['English']);
+  });
+
   it('should render a media-type selector defaulting to All with options All, Movies, Series', async () => {
     createComponent();
 
@@ -167,6 +189,16 @@ describe('SearchBar', () => {
 
     const expected: SearchRequest = { query: 'thrones', language: 'fr', mediaType: 'tv' };
     expect(emitSpy).toHaveBeenCalledExactlyOnceWith(expected);
+  });
+
+  it('should emit queryChanged as the user types in the search input', async () => {
+    createComponent();
+
+    const emitSpy = vi.spyOn(component.queryChanged, 'emit');
+
+    await materialTesting.matFormField.setMatInputValue('Search movies & series', 'matr');
+
+    expect(emitSpy).toHaveBeenCalledWith('matr');
   });
 
   it('should re-emit searchRequested when the media type changes and the query is filled', async () => {

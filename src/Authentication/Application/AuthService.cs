@@ -1,4 +1,4 @@
-﻿using Authentication.Domain;
+using Authentication.Domain;
 using Microsoft.AspNetCore.Identity;
 using Users.Domain;
 using Utilities.GuidProvider;
@@ -9,26 +9,29 @@ public sealed class AuthService(IPasswordHasher<User> passwordHasher, IUserRepos
 {
     public async Task Register(string username, string password)
     {
-        var user = new User(guidProvider.NewGuid(), username);
+        var user = new User(username);
 
-        user.PasswordHash = passwordHasher.HashPassword(user, password);
+        var passwordHash = passwordHasher.HashPassword(user, password);
 
-        await userRepository.Create(user);
+        await userRepository.Create(new UserWithCredentials(guidProvider.NewGuid(), username, passwordHash));
     }
 
-    public async Task<User?> ValidateUser(string username, string password)
+    public async Task<AuthenticatedUser?> ValidateUser(string username, string password)
     {
-        var user = await userRepository.GetByUsername(username);
+        var storedUser = await userRepository.GetUserCredentials(username);
 
-        if (user == null)
+        if (storedUser == null)
             return null;
 
         var result = passwordHasher.VerifyHashedPassword(
-            user,
-            user.PasswordHash,
+            new User(storedUser.Username),
+            storedUser.PasswordHash,
             password
         );
 
-        return result == PasswordVerificationResult.Success ? user : null;
+        if (result != PasswordVerificationResult.Success)
+            return null;
+
+        return new AuthenticatedUser(storedUser.Id, storedUser.Username);
     }
 }
