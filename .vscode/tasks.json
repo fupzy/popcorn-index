@@ -1,0 +1,99 @@
+{
+  "version": "2.0.0",
+  "options": {
+    "env": {
+      "ENV_FILE": "${workspaceFolder}/.env",
+      "APPSETTINGS_FOLDER": "${workspaceFolder}/appsettings",
+      "MIGRATION_PROJECT": "${workspaceFolder}/database/PostgreSqlMigration/PostgreSqlMigration.csproj",
+      "MAIN_PROJECT": "${workspaceFolder}/src/PopcornIndex/PopcornIndex.csproj"
+    }
+  },
+  "tasks": [
+    //task for running dotnet service
+    {
+      "label": "[dotnet] build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/src/PopcornIndex/PopcornIndex.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "[dotnet] prepare launch",
+      "dependsOrder": "sequence",
+      "dependsOn": "[dotnet] build",
+      "problemMatcher": []
+    },
+    {
+      "label": "[dotnet] Restore tools",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["tool", "restore"]
+    },
+    {
+      "label": "[dotnet] outdated",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["package", "list", "--outdated"],
+      "problemMatcher": "$msCompile",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "[EF] add migration",
+      "type": "shell",
+      "command": "dotnet tool run dotnet-ef migrations add ${input:efMigrationName} -p \"$MIGRATION_PROJECT\" -s \"$MAIN_PROJECT\" --context MigrationDbContext --verbose",
+      "problemMatcher": "$msCompile",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": ["[dotnet] Restore tools"]
+    },
+    {
+      "label": "[EF] remove last migration",
+      "type": "shell",
+      "command": "dotnet tool run dotnet-ef migrations remove -p \"$MIGRATION_PROJECT\" -s \"$MAIN_PROJECT\" --context MigrationDbContext",
+      "problemMatcher": "$msCompile",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": ["[dotnet] Restore tools"]
+    },
+    {
+      "label": "[EF] update database",
+      "type": "shell",
+      "command": "dotnet tool run dotnet-ef database update ${input:efMigrationId} -p \"$MIGRATION_PROJECT\" -s \"$MAIN_PROJECT\" --context MigrationDbContext",
+      "problemMatcher": "$msCompile",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": ["[dotnet] Restore tools"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "efMigrationName",
+      "type": "promptString",
+      "description": "Migration name",
+      "default": "my_migration_name"
+    },
+    {
+      "id": "efMigrationId",
+      "type": "promptString",
+      "description": "Migration id",
+      "default": ""
+    }
+  ]
+}
